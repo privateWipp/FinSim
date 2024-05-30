@@ -22,20 +22,35 @@ public class Bilanz {
         setDatum(datum);
 
         this.aktiva = new ArrayList<ArrayList<aktivesBestandskonto>>();
-        this.anlagevermoegen = new ArrayList<aktivesBestandskonto>();
-        this.umlaufvermoegen = new ArrayList<aktivesBestandskonto>();
+            this.anlagevermoegen = new ArrayList<aktivesBestandskonto>();
+            this.umlaufvermoegen = new ArrayList<aktivesBestandskonto>();
         this.aktiva.add(anlagevermoegen);
         this.aktiva.add(umlaufvermoegen);
 
         this.passiva = new ArrayList<ArrayList<Konto>>();
-        this.eigenkapital = new ArrayList<Konto>();
-        this.fremdkapital = new ArrayList<Konto>();
+            this.eigenkapital = new ArrayList<Konto>();
+            this.fremdkapital = new ArrayList<Konto>();
         this.passiva.add(eigenkapital);
         this.passiva.add(fremdkapital);
     }
 
-    public void kntHinzufuegen(Konto konto) {
-        if(konto == null)
+    public void kontoHinzufuegen(Konto konto) throws ModelException {
+        if(konto == null) {
+            throw new ModelException("Das angegebene Konto ist ungültig!");
+        } else {
+            int klasse = konto.getKontoklasse();
+            if(!(konto.berechneBestand() == 0)){
+                if(konto.getKontoklasse() == 0 && konto instanceof aktivesBestandskonto) {
+                    this.anlagevermoegen.add((aktivesBestandskonto) konto);
+                } else if(konto.getKontoklasse() >= 1 && konto.getKontoklasse() <= 2 && konto instanceof aktivesBestandskonto) {
+                    this.umlaufvermoegen.add((aktivesBestandskonto) konto);
+                } else if (konto.getKontoklasse() == 3) {
+                    this.fremdkapital.add(konto);
+                } else if(konto.getKontoklasse() >= 4 && konto.getKontoklasse() <= 9) {
+                    this.eigenkapital.add(konto);
+                }
+            }
+        }
     }
 
     public void setBezeichnung(String bezeichnung) throws ModelException {

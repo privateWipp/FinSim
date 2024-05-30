@@ -1,0 +1,16 @@
+Datum: 30.05.2024
+
+TODOS für nächstes Mal:
+    -   Klasse erstellen: Geschäftsjahr
+            - Geschaeftsjahr:
+                - geschaeftsjahr : int
+                - eroeffnungsBilanz : Bilanz
+                - schlussBilanz : Bilanz
+                // Im Konstruktor wird die Eroeffnungsbilanz direkt erstellt!
+
+    -   Klasse Unternehmen:
+            - aktuellesDatum: LocalDate
+            - geschaeftsjahre: ArrayList<Geschaeftsjahr>
+            - kontenplan : Kontenplan
+
+            + printBilanz() : temporäre Bilanz zurückgeben

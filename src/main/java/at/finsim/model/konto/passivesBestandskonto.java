@@ -26,7 +26,7 @@ public class passivesBestandskonto extends Konto {
     }
 
     @Override
-    float berechneBestand() {
+    public float berechneBestand() {
         float sollSeite = 0;
         float habenSeite = 0;
 

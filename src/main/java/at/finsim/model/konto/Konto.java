@@ -10,7 +10,7 @@ import java.util.Objects;
  * Das ist die abstrakte Klasse Konto, da es 4 Kontoarten gibt. Ein Konto enthält Einträge und ist ein aktiver Bestand einer Bilanz.
  *
  * @author Jonas & Nikodem
- * @version  0.1
+ * @version 0.1
  */
 public abstract class Konto {
     private String bezeichnung;
@@ -19,7 +19,10 @@ public abstract class Konto {
     private ArrayList<Eintrag> haben;
 
     /**
-     * @param bezeichnung, kontonummer, soll, haben
+     * @param bezeichnung
+     * @param kontonummer
+     * @param soll
+     * @param haben
      * @throws ModelException
      */
     public Konto(String bezeichnung, String kontonummer, ArrayList<Eintrag> soll, ArrayList<Eintrag> haben) throws ModelException {
@@ -37,15 +40,24 @@ public abstract class Konto {
         }
     }
 
+    /**
+     * Überprüft on die übergebene Kontonummer gültig ist --> Eine 4 Stellige positive  Zahl
+     * @param kontonummer
+     * @throws ModelException
+     */
     public void setKontonummer(String kontonummer) throws ModelException {
-        if (kontonummer == null || kontonummer.length() < 4) {
-            throw new ModelException("Die Kontonummer muss immer größer Null sein und vier Zeichen lang!");
+        if (kontonummer == null || kontonummer.length() != 4) {
+            throw new ModelException("Die Kontonummer muss immer vier Zeichen lang sein!");
         } else {
-            int kontonummerZahl = Integer.parseInt(kontonummer);
-            if (kontonummerZahl < 0 || kontonummerZahl >= 10000) {
-                throw new ModelException("Die Kontonummer muss größer Null und 10.000 sein (=entspricht nicht der Konvention)!");
-            } else {
-                this.kontonummer = kontonummer;
+            try {
+                int kontonummerZahl = Integer.parseInt(kontonummer);
+                if (kontonummerZahl < 0) {
+                    throw new ModelException("Die Kontonummer muss größer Null sein!");
+                } else {
+                    this.kontonummer = kontonummer;
+                }
+            } catch (NumberFormatException e) {
+                throw new ModelException(e.getMessage());
             }
         }
     }
@@ -66,10 +78,25 @@ public abstract class Konto {
         return this.haben;
     }
 
+    /**
+     * Holt sich aus der Kontonummer die Kontoklasse (first digit)
+     *
+     * @return Kontoklasse
+     */
+    public int getKontoklasse() {
+        Integer kontonummer = Integer.parseInt(this.kontonummer);
+        int length = String.valueOf(kontonummer).length();
+        if (length < 4) {
+            return 0;
+        } else {
+            return Integer.parseInt(this.kontonummer.substring(0, 1));
+        }
+    }
+
     public void eintragen(ArrayList<Eintrag> eintragArrayList, Eintrag eintrag) throws ModelException {
-        if (!eintragArrayList.equals(this.soll) && !eintragArrayList.equals(this.haben)){
+        if (!eintragArrayList.equals(this.soll) && !eintragArrayList.equals(this.haben)) {
             throw new ModelException("Ungültige ArrayList!");
-        } else if(eintragArrayList.contains(eintrag)) {
+        } else if (eintragArrayList.contains(eintrag)) {
             throw new ModelException("Der übergebene Eintrag ist bereits vorhanden!");
         } else {
             eintragArrayList.add(eintrag);
@@ -78,6 +105,7 @@ public abstract class Konto {
 
     /**
      * Diese Methode summiert die beiden Seiten des Kontos und differenziert die
+     *
      * @return saldo: Der Endbestand des Kontos
      */
     public float berechneSaldo() {
@@ -85,23 +113,35 @@ public abstract class Konto {
         float sollSeite = 0;
         float habenSeite = 0;
 
-        for(Eintrag tmp : this.soll) {
+        for (Eintrag tmp : this.soll) {
             sollSeite += tmp.getBetrag();
         }
-        for(Eintrag tmp : this.haben) {
+        for (Eintrag tmp : this.haben) {
             habenSeite += tmp.getBetrag();
         }
 
-        if(sollSeite > habenSeite) {
+        if (sollSeite > habenSeite) {
             saldo = sollSeite - habenSeite;
-        } else if(habenSeite > sollSeite) {
+        } else if (habenSeite > sollSeite) {
             saldo = habenSeite - sollSeite;
         }
 
         return saldo;
     }
 
-    abstract float berechneBestand();
+    public float berechneBestand() {
+        float sollSeite = 0;
+        float habenSeite = 0;
+
+        for (Eintrag tmp : this.soll) {
+            sollSeite += tmp.getBetrag();
+        }
+        for (Eintrag tmp : this.haben) {
+            habenSeite += tmp.getBetrag();
+        }
+
+        return sollSeite + habenSeite;
+    }
 
     @Override
     public boolean equals(Object o) {
