@@ -10,35 +10,42 @@ import java.util.Objects;
 public class Bilanz {
     private String bezeichnung;
     private LocalDate datum;
-    private ArrayList<ArrayList<aktivesBestandskonto>> aktiva;
-    private ArrayList<ArrayList<Konto>> passiva;
+    private final ArrayList<ArrayList<aktivesBestandskonto>> aktiva;
+    private final ArrayList<ArrayList<Konto>> passiva;
     private ArrayList<aktivesBestandskonto> anlagevermoegen;
     private ArrayList<aktivesBestandskonto> umlaufvermoegen;
     private ArrayList<Konto> eigenkapital;
     private ArrayList<Konto> fremdkapital;
 
-    public Bilanz(String bezeichnung, LocalDate datum, ArrayList<ArrayList<aktivesBestandskonto>> aktiva, ArrayList<ArrayList<Konto>> passiva) throws ModelException{
+    public Bilanz(String bezeichnung, LocalDate datum, Kontenplan kontenplan) throws ModelException{
         setBezeichnung(bezeichnung);
         setDatum(datum);
 
-        this.aktiva = new ArrayList<ArrayList<aktivesBestandskonto>>();
-            this.anlagevermoegen = new ArrayList<aktivesBestandskonto>();
-            this.umlaufvermoegen = new ArrayList<aktivesBestandskonto>();
+        this.aktiva = new ArrayList<>();
+            this.anlagevermoegen = new ArrayList<>();
+            this.umlaufvermoegen = new ArrayList<>();
         this.aktiva.add(anlagevermoegen);
         this.aktiva.add(umlaufvermoegen);
 
-        this.passiva = new ArrayList<ArrayList<Konto>>();
-            this.eigenkapital = new ArrayList<Konto>();
-            this.fremdkapital = new ArrayList<Konto>();
+        this.passiva = new ArrayList<>();
+            this.eigenkapital = new ArrayList<>();
+            this.fremdkapital = new ArrayList<>();
         this.passiva.add(eigenkapital);
         this.passiva.add(fremdkapital);
+
+        for (ArrayList<Konto> konten:
+             kontenplan.getKonten().values()) {
+            for (Konto konto:
+                 konten) {
+                kontoHinzufuegen(konto);
+            }
+        }
     }
 
     public void kontoHinzufuegen(Konto konto) throws ModelException {
         if(konto == null) {
             throw new ModelException("Das angegebene Konto ist ungültig!");
         } else {
-            int klasse = konto.getKontoklasse();
             if(!(konto.berechneBestand() == 0)){
                 if(konto.getKontoklasse() == 0 && konto instanceof aktivesBestandskonto) {
                     this.anlagevermoegen.add((aktivesBestandskonto) konto);

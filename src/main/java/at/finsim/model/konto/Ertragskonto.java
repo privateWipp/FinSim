@@ -4,26 +4,20 @@ import at.finsim.model.Eintrag;
 import at.finsim.model.ModelException;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 /**
- * Ertragskonten sind erfolgserhöhend
+ * Ertragskonten sind erfolgs erhöhend
  */
 public class Ertragskonto extends Konto {
 
     /**
-     *
-     * @param bezeichnung
-     * @param kontonummer
-     * @param soll
-     * @param haben
-     * @param anfangsbestand
-     * @throws ModelException
+     *Der Default-Konstruktor
+     * @param bezeichnung Name
+     * @param kontonummer Kennzahl
+     * @throws ModelException Wird von Setter geworfen.
      */
-    public Ertragskonto(String bezeichnung, String kontonummer, ArrayList<Eintrag> soll, ArrayList<Eintrag> haben, float anfangsbestand) throws ModelException {
-        super(bezeichnung, kontonummer, soll, haben);
-        eintragen(getHaben(), new Eintrag(LocalDate.now(), "Anfangsbestand", anfangsbestand));
-        //DAS DATUM IST INKORREKT --> Das Jahr sollte das von dem aktuellen Geschäftsjahr sein
+    public Ertragskonto(String bezeichnung, String kontonummer) throws ModelException {
+        super(bezeichnung, kontonummer);
     }
 
     @Override

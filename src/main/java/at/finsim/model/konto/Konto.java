@@ -13,23 +13,35 @@ import java.util.Objects;
  * @version 0.1
  */
 public abstract class Konto {
+    /**
+     * Der Name des Kontos
+     */
     private String bezeichnung;
+    /**
+     * Die Kontonummer bzw. die Kennzahl. Daraus ergibt sich die Kontoklasse.
+     */
     private String kontonummer;
+
+    /**
+     * Eine ArrayList von Einträgen auf der SOLL Seite. Je nach Kontoart verringern oder vermehren diese den Betrag vom Konto.
+     */
     private ArrayList<Eintrag> soll;
+    /**
+     * Eine ArrayList von Einträgen auf der HABEN Seite. Je nach Kontoart verringern oder vermehren diese den Betrag vom Konto.
+     */
     private ArrayList<Eintrag> haben;
 
     /**
-     * @param bezeichnung
-     * @param kontonummer
-     * @param soll
-     * @param haben
-     * @throws ModelException
+     * Der Default-Konstruktor
+     * @param bezeichnung Name
+     * @param kontonummer Kennzahl
+     * @throws ModelException Exception für die Setter
      */
-    public Konto(String bezeichnung, String kontonummer, ArrayList<Eintrag> soll, ArrayList<Eintrag> haben) throws ModelException {
+    public Konto(String bezeichnung, String kontonummer) throws ModelException {
         setBezeichnung(bezeichnung);
         setKontonummer(kontonummer);
-        this.soll = new ArrayList<Eintrag>();
-        this.haben = new ArrayList<Eintrag>();
+        this.soll = new ArrayList<>();
+        this.haben = new ArrayList<>();
     }
 
     public void setBezeichnung(String bezeichnung) throws ModelException {
@@ -41,9 +53,9 @@ public abstract class Konto {
     }
 
     /**
-     * Überprüft on die übergebene Kontonummer gültig ist --> Eine 4 Stellige positive  Zahl
-     * @param kontonummer
-     * @throws ModelException
+     * Überprüft, ob die übergebene Kontonummer gültig ist → Eine vierstellige positive Zahl
+     * @param kontonummer Kennzahl
+     * @throws  ModelException Wird bei einem ungültigen Parameter geworfen
      */
     public void setKontonummer(String kontonummer) throws ModelException {
         if (kontonummer == null || kontonummer.length() != 4) {
@@ -93,6 +105,12 @@ public abstract class Konto {
         }
     }
 
+    /**
+     *  Die Methode um einen Eintrag hinzuzufügen
+     * @param eintragArrayList Es muss übergeben werden, ob auf die Soll oder Haben Seite der Eintrag gehört.
+     * @param eintrag Eintrag
+     * @throws ModelException Wird bei ungültigen Parametern geworfen
+     */
     public void eintragen(ArrayList<Eintrag> eintragArrayList, Eintrag eintrag) throws ModelException {
         if (!eintragArrayList.equals(this.soll) && !eintragArrayList.equals(this.haben)) {
             throw new ModelException("Ungültige ArrayList!");
@@ -129,18 +147,12 @@ public abstract class Konto {
         return saldo;
     }
 
+    /**
+     * Berechnet den Bestand je nach Kontoart.
+     * @return Der aktuelle Bestand des Kontos
+     */
     public float berechneBestand() {
-        float sollSeite = 0;
-        float habenSeite = 0;
-
-        for (Eintrag tmp : this.soll) {
-            sollSeite += tmp.getBetrag();
-        }
-        for (Eintrag tmp : this.haben) {
-            habenSeite += tmp.getBetrag();
-        }
-
-        return sollSeite + habenSeite;
+        return 0;
     }
 
     @Override
@@ -159,6 +171,6 @@ public abstract class Konto {
     @Override
     public String toString() {
         return "Bezeichnung: " + getBezeichnung() + ",\n" +
-                "Kontonr.: " + getKontonummer();
+                "Kontonummer.: " + getKontonummer();
     }
 }

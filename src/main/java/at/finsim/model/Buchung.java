@@ -6,6 +6,9 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 
+/**
+ * Die Klasse Buchung wird hauptsächlich zu Visualisierungszwecken verwendet.
+ */
 public class Buchung {
     private String bezeichnung;
     private String beleg;
@@ -13,12 +16,19 @@ public class Buchung {
     private ArrayList<Konto> soll;
     private ArrayList<Konto> haben;
 
-    public Buchung(String bezeichnung, String beleg, LocalDate datum, ArrayList<Konto> soll, ArrayList<Konto> haben) throws ModelException {
+    /**
+     * Der Default-Konstruktor
+     * @param bezeichnung Name
+     * @param beleg Belegart
+     * @param datum Datum der Buchung
+     * @throws ModelException Wird von Setter geworfen
+     */
+    public Buchung(String bezeichnung, String beleg, LocalDate datum) throws ModelException {
         setBezeichnung(bezeichnung);
         setBeleg(beleg);
         setDatum(datum);
-        this.soll = new ArrayList<Konto>();
-        this.haben = new ArrayList<Konto>();
+        this.soll = new ArrayList<>();
+        this.haben = new ArrayList<>();
     }
 
     public void setBezeichnung(String bezeichnung) throws ModelException {
@@ -39,7 +49,7 @@ public class Buchung {
 
     public void setDatum(LocalDate datum) throws ModelException {
         if(datum == null) {
-            throw new ModelException("Das Datum der zueintragenden Buchung darf nicht null sein!");
+            throw new ModelException("Das Datum der zu eintragenden Buchung darf nicht null sein!");
         } else {
             this.datum = datum;
         }

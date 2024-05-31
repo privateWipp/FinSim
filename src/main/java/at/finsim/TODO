@@ -1,16 +1,26 @@
-Datum: 30.05.2024
+Datum: 31.05.2024
 
 TODOS für nächstes Mal:
-    -   Klasse erstellen: Geschäftsjahr
-            - Geschaeftsjahr:
-                - geschaeftsjahr : int
-                - eroeffnungsBilanz : Bilanz
-                - schlussBilanz : Bilanz
-                // Im Konstruktor wird die Eroeffnungsbilanz direkt erstellt!
-
     -   Klasse Unternehmen:
             - aktuellesDatum: LocalDate
             - geschaeftsjahre: ArrayList<Geschaeftsjahr>
             - kontenplan : Kontenplan
 
             + printBilanz() : temporäre Bilanz zurückgeben
+
+    -   View:
+            - Dashboard erstellen (neues Fenster -> neue View):
+                Ich schlage vor die Mainseite des Unternehmens, also das Dashboard, wieder
+                als ein BorderPane zu machen, Wie bei der Main Seite hätten wir left
+                eine Navbar während im Center der Content ist.
+                Für das Dashboard selöbst schlage ich viellecht eine Tile Pane vor.
+                Ich stelle mir das irgendwie so vor, im jeden Tile gibt es etwas zu sehen
+                im ersten Tile die Grundsätzlichen Infos vom Unternehmen (Name Gründungsjahr beschreibung ig.)
+                im nächsten dann die SStatistiken, dann das aktuelle Geschäftsjahr, dann die alten Geschäftsjahre,
+                dann den Kontenplan, die aktuelle Bilanz etc. und diese Tiles sind halt eigene "Fenster"
+                wo man auf der Dashboard nur die wichtigste Info sieht und um ins Fenster selbst reinzukommen  muss man
+                die Fenster anklicken um das Fenster zu öffnen (verzeih die Wortwiederholungen es ist spät)
+                Wenn man in die Fenster reinkommt öffnet sich im center ein neuer Pane.. je nach dem im welchen Fenster man ist,
+                ist ein anderer Pane.
+                Vorschlag: Wir machen das alles (center) im TabPane, der ertse Tab, der offen ist ist das Dashboard, wenn man
+                Fenster anglickt öffnet sich ein neuer Tab

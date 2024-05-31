@@ -1,7 +1,6 @@
 package at.finsim.view;
 
 import at.finsim.control.Controller;
-import at.finsim.model.Buchung;
 import at.finsim.model.Unternehmen;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
@@ -20,7 +19,7 @@ import javafx.scene.text.Text;
  *
  */
 public class View extends BorderPane {
-    private Controller ctrl;
+    private final Controller ctrl;
 
     public View() {
         //MVC-Referenzen
@@ -47,7 +46,7 @@ public class View extends BorderPane {
 
         // Unternehmen Listview
         BorderPane unternehmen = new BorderPane();
-        this.unternehmenListView = new ListView<Unternehmen>();
+        this.unternehmenListView = new ListView<>();
 
         HBox unternehmenTop = new HBox();
         TextField search = new TextField();

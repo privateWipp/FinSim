@@ -9,9 +9,9 @@ public class Kontenplan {
     private HashMap<Integer, ArrayList<Konto>> konten;
 
     public Kontenplan() {
-        this.konten = new HashMap<Integer, ArrayList<Konto>>();
+        this.konten = new HashMap<>();
         for (int i = 0; i < 10; i++) {
-            this.konten.put(i, new ArrayList<Konto>());
+            this.konten.put(i, new ArrayList<>());
         }
     }
 
@@ -26,11 +26,9 @@ public class Kontenplan {
             }
         }
     }
-
     public void kontoEntfernen(Konto konto) {
         this.konten.get(konto.getKontoklasse()).remove(konto);
     }
-
     public HashMap<Integer, ArrayList<Konto>> getKonten() {
         return this.konten;
     }

@@ -3,18 +3,15 @@ package at.finsim.model.konto;
 import at.finsim.model.Eintrag;
 import at.finsim.model.ModelException;
 
-import java.util.ArrayList;
 
 public class Aufwandskonto extends Konto {
     /**
-     * @param bezeichnung
-     * @param kontonummer
-     * @param soll
-     * @param haben
-     * @throws ModelException
+     * @param bezeichnung Name
+     * @param kontonummer Kennzahl
+     * @throws ModelException Wird von Setter geworfen
      */
-    public Aufwandskonto(String bezeichnung, String kontonummer, ArrayList<Eintrag> soll, ArrayList<Eintrag> haben) throws ModelException {
-        super(bezeichnung, kontonummer, soll, haben);
+    public Aufwandskonto(String bezeichnung, String kontonummer) throws ModelException {
+        super(bezeichnung, kontonummer);
     }
 
     @Override

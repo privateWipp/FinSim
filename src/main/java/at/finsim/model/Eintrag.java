@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 /**
- * Eine Buchung ist ein einzelnder Eintrag im paginierten Konto.
+ * Eine Buchung ist ein einzelner Eintrag im paginierten Konto.
  *
  * @author Jonas & Nikodem
  * @version 0.1

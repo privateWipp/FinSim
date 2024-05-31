@@ -7,7 +7,6 @@ import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
-import javafx.util.Callback;
 
 /**
  * Diese Klasse ist ein Dialog, der dem Nutzer dazu dient, per Klick
@@ -54,24 +53,21 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         ButtonType buttonType = new ButtonType("Hinzufühen", ButtonBar.ButtonData.APPLY);
         getDialogPane().getButtonTypes().add(buttonType);
 
-        this.setResultConverter(new Callback<ButtonType, Unternehmen>() {
-            @Override
-            public Unternehmen call(ButtonType bt) {
-                if(bt == buttonType) {
-                    try {
-                        int gruendungsJahr = Integer.parseInt(gruendungsJahrTF.getText());
-                        float budget = Float.parseFloat(budgetTF.getText());
-                        return new Unternehmen(nameTF.getText(), gruendungsJahr, budget);
-                    } catch (ModelException me) {
-                        Alert alert = new Alert(Alert.AlertType.ERROR);
-                        alert.setTitle("Fehler");
-                        alert.setHeaderText("Unternehmen erstellen");
-                        alert.setContentText(me.getMessage());
-                        alert.showAndWait();
-                    }
+        this.setResultConverter(bt -> {
+            if(bt == buttonType) {
+                try {
+                    int gruendungsJahr1 = Integer.parseInt(gruendungsJahrTF.getText());
+                    float budget1 = Float.parseFloat(budgetTF.getText());
+                    return new Unternehmen(nameTF.getText(), gruendungsJahr1, budget1);
+                } catch (ModelException me) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Fehler");
+                    alert.setHeaderText("Unternehmen erstellen");
+                    alert.setContentText(me.getMessage());
+                    alert.showAndWait();
                 }
-                return null;
             }
+            return null;
         });
     }
 }

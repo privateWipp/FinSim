@@ -9,7 +9,7 @@ import java.io.File;
 import java.util.Optional;
 
 public class Controller {
-    private View view;
+    private final View view;
 
     public Controller(View view) {
         this.view = view;
@@ -31,8 +31,5 @@ public class Controller {
 
         File file = fc.showOpenDialog(view.getScene().getWindow());
 
-        try {
-
-        }
     }
 }
