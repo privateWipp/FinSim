@@ -3,6 +3,8 @@ package at.finsim.control;
 import at.finsim.model.Unternehmen;
 import at.finsim.view.View;
 import at.finsim.view.addUnternehmenDialog;
+import at.finsim.view.kontenplanView;
+import at.finsim.view.unternehmenView;
 import javafx.stage.FileChooser;
 
 import java.io.File;
@@ -25,11 +27,30 @@ public class Controller {
         });
     }
 
-    public void unternehmenOeffnen(View view) {
+    public void unternehmenOeffnen() {
         FileChooser fc = new FileChooser();
         fc.setTitle("Unternehmen importieren");
 
-        File file = fc.showOpenDialog(view.getScene().getWindow());
+        File file = fc.showOpenDialog(this.view.getScene().getWindow());
+    }
+
+    public void runUnternehmen(Unternehmen unternehmen) {
+        unternehmenView unternehmenView = new unternehmenView(this, unternehmen);
+    }
+
+    public void showKontenplan(Unternehmen unternehmen) {
+        kontenplanView kontenplanView = new kontenplanView(unternehmen);
+    }
+
+    public void grundInfos(Unternehmen unternehmen) {
+
+    }
+
+    public void showStatistikenUnternehmen(Unternehmen unternehmen) {
+
+    }
+
+    public void showAktuelleBilanz(Unternehmen unternehmen) {
 
     }
 }

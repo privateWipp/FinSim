@@ -2,6 +2,7 @@ package at.finsim.view;
 
 import at.finsim.control.Controller;
 import at.finsim.model.Unternehmen;
+import javafx.beans.binding.Bindings;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
@@ -52,14 +53,20 @@ public class View extends BorderPane {
         TextField search = new TextField();
         search.setPromptText("Suche");
         Button neuesUnternehmen = new Button("neues Unternehmen");
+        Button runUnternehmen = new Button("Unternehmen öffnen");
         Button openUnternehmen = new Button("Unternehmen importieren");
         Button deleteUnternehmen = new Button("Unternehmen entfernen");
-        unternehmenTop.getChildren().addAll(search, neuesUnternehmen, openUnternehmen, deleteUnternehmen);
+        unternehmenTop.getChildren().addAll(search, neuesUnternehmen, runUnternehmen, openUnternehmen, deleteUnternehmen);
         unternehmen.setTop(unternehmenTop);
         unternehmen.setCenter(this.unternehmenListView);
 
         neuesUnternehmen.setOnAction(e -> this.ctrl.neuesUnternehmen());
-        openUnternehmen.setOnAction(e -> this.ctrl.unternehmenOeffnen(this));
+        runUnternehmen.disableProperty().bind(Bindings.isEmpty(this.unternehmenListView.getSelectionModel().getSelectedItems()));
+        runUnternehmen.setOnAction(e -> {
+            this.ctrl.runUnternehmen(this.unternehmenListView.getSelectionModel().getSelectedItem());
+            // jetzige Stage closen (idk wie)
+        });
+        openUnternehmen.setOnAction(e -> this.ctrl.unternehmenOeffnen());
 
         unternehmenTop.setSpacing(10);
         unternehmen.setPadding(new Insets(10, 20, 10 ,20));
