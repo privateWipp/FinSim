@@ -66,7 +66,6 @@ public class View extends BorderPane {
             this.ctrl.runUnternehmen(this.unternehmenListView.getSelectionModel().getSelectedItem());
             // jetzige Stage closen (idk wie)
         });
-        openUnternehmen.setOnAction(e -> this.ctrl.unternehmenOeffnen());
 
         unternehmenTop.setSpacing(10);
         unternehmen.setPadding(new Insets(10, 20, 10 ,20));

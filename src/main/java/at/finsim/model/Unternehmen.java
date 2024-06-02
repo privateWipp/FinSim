@@ -1,10 +1,12 @@
 package at.finsim.model;
 
+import java.io.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Unternehmen {
+public class Unternehmen implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String name;
     private int gruendungsjahr;
     private LocalDate aktuellesDatum;
@@ -16,7 +18,9 @@ public class Unternehmen {
         setName(name);
         setGruendungsjahr(gruendungsjahr);
         this.aktuellesDatum = LocalDate.now();
-        this.geschaeftsjahre = new ArrayList<Geschaeftsjahr>();
+        this.geschaeftsjahre = new ArrayList<>();
+        Geschaeftsjahr geschaeftsjahr = new Geschaeftsjahr(gruendungsjahr, name, aktuellesDatum, kontenplan);
+        this.geschaeftsjahre.add(geschaeftsjahr);
         setKontenplan(kontenplan);
         setBudget(budget);
     }
@@ -88,10 +92,32 @@ public class Unternehmen {
         return this.kontenplan;
     }
 
-
-
     public float getBudget() {
         return this.budget;
+    }
+
+    public int getAktuellesGeschaeftsjahr() {
+        return this.geschaeftsjahre.getLast().getJahr();
+    }
+
+    public void speichern(File file) throws FileNotFoundException {
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(file))) {
+            oos.writeObject(this);
+            oos.flush();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public void laden(File file) throws FileNotFoundException {
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(file))) {
+            Unternehmen u = this;
+            u = (Unternehmen) ois.readObject();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     @Override

@@ -1,34 +1,32 @@
 package at.finsim.view;
 
-import at.finsim.control.Controller;
-import at.finsim.model.Geschaeftsjahr;
 import at.finsim.model.Unternehmen;
+import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
-import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ToolBar;
+import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import at.finsim.control.unternehmenController;
+import javafx.scene.text.Text;
 
-import java.time.LocalDate;
+public class unternehmenView extends TabPane {
+    private Unternehmen model;
+    private unternehmenController ctrl;
 
-public class unternehmenView extends BorderPane {
-    private Stage stage;
-    private Unternehmen unternehmen;
-    private Controller ctrl;
-
-    public unternehmenView(Controller controller, Unternehmen unternehmen) {
-        this.stage = new Stage();
-        this.ctrl = controller;
-        this.unternehmen = unternehmen;
+    public unternehmenView(Unternehmen unternehmen) {
+        this.ctrl = new unternehmenController(this, model);
+        this.model = unternehmen;
 
         initGUI();
     }
 
     private void initGUI() {
+        // Dashboard: Main Tab
+        BorderPane dashboard = new BorderPane();
+
         VBox leftPane = new VBox();
         leftPane.setStyle("-fx-background-color: lightgray;");
 
@@ -37,76 +35,70 @@ public class unternehmenView extends BorderPane {
         toolBar.setStyle("-fx-background-color: lightgray;");
         toolBar.setPrefHeight(Integer.MAX_VALUE);
 
-        Button unternehmenButton = new Button("/");
-        // unternehmenButton.setOnAction(e -> setCenter(unternehmen));
+        Button speichernButton = new Button("Speichern");
+        Button ladenButton = new Button("Laden");
 
-        toolBar.getItems().addAll(unternehmenButton);
+        speichernButton.setOnAction(e -> this.ctrl.unternehmenSpeichern());
+        ladenButton.setOnAction(e -> this.ctrl.unternehmenLaden());
+
+        toolBar.getItems().addAll(speichernButton, ladenButton);
         leftPane.getChildren().addAll(toolBar);
 
-        setLeft(leftPane);
+        dashboard.setLeft(leftPane);
 
         // -------------------------------------------------------------------
 
-        TilePane tilePane = new TilePane();
+        // Grund-Infos: 1. Tab
+        GridPane grundInfosGP = new GridPane();
 
-        Button grundInfos = new Button(this.unternehmen.getName() + ",\n" +
-                "Gründungsjahr: " + this.unternehmen.getGruendungsjahr() + ",\n" +
-                this.unternehmen.getBudget());
-        grundInfos.setOnAction(e -> this.ctrl.grundInfos(unternehmen));
+        // -------------------------------------------------------------------
 
-        Button statistiken = new Button("Statistiken PLATZHALTER");
-        statistiken.setOnAction(e -> this.ctrl.showStatistikenUnternehmen(unternehmen));
+        GridPane gp = new GridPane();
 
-        Label aktuellesGeschaeftsjahr = new Label("aktuelles Geschäftsjahr:" + "\n" +
-                getAktuellesGeschaeftsjahr());
+        HBox grundInfosHBox = new HBox();
+        Text grundInfosText = new Text(this.model.getName() + "\n" +
+                this.model.getGruendungsjahr() + "\n" +
+                this.model.getBudget());
+        grundInfosHBox.getChildren().addAll(grundInfosText);
 
-        Label alteGeschaeftsjahre = new Label("alte Geschäftsjahre:" + "\n" +
-                getAlteGeschaeftsjahre());
+        HBox statistikenHBox = new HBox();
+        statistikenHBox.getChildren().addAll();
 
+        HBox aktuellesGeschaeftsjahrHBox = new HBox();
+        Text aktuellesGeschaeftsjahrText = new Text("Geschäftsjahre" + "\n" +
+                "(akt. " + Integer.toString(this.model.getAktuellesGeschaeftsjahr()) + ")");
+        aktuellesGeschaeftsjahrHBox.getChildren().addAll(aktuellesGeschaeftsjahrText);
+
+        HBox kontenplanHBox = new HBox();
         Button kontenplanButton = new Button("Kontenplan");
-        kontenplanButton.setOnAction(e -> this.ctrl.showKontenplan(this.unternehmen));
+        kontenplanButton.setOnAction(e -> this.ctrl.showKontenplan(this.model));
+        kontenplanHBox.getChildren().addAll(kontenplanButton);
 
-        Button aktuelleBilanz = new Button("aktuelle Bilanz");
-        aktuelleBilanz.setOnAction(e -> this.ctrl.showAktuelleBilanz(unternehmen));
+        HBox bilanzHBox = new HBox();
+        Text bilanzText = new Text("akt. Bilanz");
+        bilanzHBox.getChildren().addAll(bilanzText);
 
-        tilePane.getChildren().addAll(grundInfos, aktuellesGeschaeftsjahr, alteGeschaeftsjahre, kontenplanButton, aktuelleBilanz);
+        grundInfosHBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
 
-        setCenter(tilePane);
-
-        // -------------------------------------------------------------------
-
-        this.stage.setTitle(this.unternehmen.getName() + " : Unternehmen");
-        this.stage.setResizable(false);
-        Scene scene = new Scene(this, 1280, 720);
-        this.stage.setScene(scene);
-        this.stage.show();
-    }
-
-    private int getAktuellesGeschaeftsjahr() {
-        int aktuellesGeschaeftsjahr = 0;
-        int aktuellesJahr = LocalDate.now().getYear();
-        int kleinsteDifferenz = Integer.MIN_VALUE;
-
-        for(Geschaeftsjahr tmp : this.unternehmen.getGeschaeftsjahre()) {
-            if(tmp.getJahr() > kleinsteDifferenz) {
-                kleinsteDifferenz = tmp.getJahr();
-                aktuellesGeschaeftsjahr = tmp.getJahr();
             }
-        }
+        });
 
-        return aktuellesGeschaeftsjahr;
-    }
+        gp.add(grundInfosHBox, 0, 0, 1, 1);
+        gp.add(statistikenHBox, 1, 0, 1, 1);
+        gp.add(aktuellesGeschaeftsjahrHBox, 2, 0, 1, 1);
+        gp.add(kontenplanHBox, 0,1, 1, 1);
+        gp.add(bilanzHBox, 1, 1, 1, 1);
 
-    private String getAlteGeschaeftsjahre() {
-        StringBuilder rueckgabe = new StringBuilder();
-        int naechtesGeschaeftsjahr = getAktuellesGeschaeftsjahr();
+        dashboard.setCenter(gp);
 
-        for (Geschaeftsjahr gj : this.unternehmen.getGeschaeftsjahre()) {
-            if (!(gj.getJahr() == naechtesGeschaeftsjahr)) {
-                rueckgabe.append(gj.getJahr()).append("\n");
-            }
-        }
+        // -------------------------------------------------------------------------------------------------
 
-        return rueckgabe.toString();
+        Tab dashboardTab = new Tab("Dashboard", dashboard);
+        dashboardTab.setClosable(false);
+        this.getTabs().addAll(dashboardTab);
+
+
     }
 }

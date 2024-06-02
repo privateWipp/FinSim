@@ -43,14 +43,6 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         gruendungsjahrHBox.setSpacing(10);
         gruendungsjahrHBox.getChildren().addAll(gruendungsjahr, gruendungsjahrTF);
 
-        HBox geschaeftsjahrHBox = new HBox();
-        Label geschaeftsjahr = new Label("Geschäftsjahr:");
-        TextField geschaeftsjahrTF = new TextField();
-        geschaeftsjahrTF.setPromptText("z.B.: 2024, 2023, 2022, ...");
-        geschaeftsjahrHBox.setPadding(new Insets(0, 0, 10, 10));
-        geschaeftsjahrHBox.setSpacing(10);
-        geschaeftsjahrHBox.getChildren().addAll(geschaeftsjahr, geschaeftsjahrTF);
-
         HBox budgetHBox = new HBox();
         Label budget = new Label("Budget:");
         TextField budgetTF = new TextField();
@@ -60,7 +52,7 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         budgetHBox.setSpacing(10);
         budgetHBox.getChildren().addAll(budget, budgetTF, eurSymbol);
 
-        flowPane.getChildren().addAll(nameHBox, gruendungsjahrHBox, geschaeftsjahrHBox, budgetHBox);
+        flowPane.getChildren().addAll(nameHBox, gruendungsjahrHBox, budgetHBox);
         getDialogPane().setContent(flowPane);
 
         ButtonType buttonType = new ButtonType("Hinzufügen", ButtonBar.ButtonData.APPLY);
@@ -71,12 +63,9 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
                 try {
                     int gruendungsJahr1 = Integer.parseInt(gruendungsjahrTF.getText());
                     float budget1 = Float.parseFloat(budgetTF.getText());
-                    int nowYear = LocalDate.now().getYear();
                     LocalDate now = LocalDate.now();
                     Kontenplan kontenplan = new Kontenplan();
                     ArrayList<Geschaeftsjahr> geschaeftsjahre = new ArrayList<Geschaeftsjahr>();
-                    Geschaeftsjahr geschaeftsjahr1 = new Geschaeftsjahr(nowYear, nameTF.getText(), now, kontenplan);
-                    geschaeftsjahre.add(geschaeftsjahr1);
                     return new Unternehmen(nameTF.getText(), gruendungsJahr1, now, geschaeftsjahre, kontenplan, budget1);
                 } catch (ModelException me) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);

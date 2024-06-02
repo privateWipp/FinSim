@@ -8,7 +8,7 @@ TODOS für nächstes Mal:
     -   View:
             - Dashboard erstellen (neues Fenster -> neue View):
                 Ich schlage vor die Mainseite des Unternehmens, also das Dashboard, wieder
-                als ein BorderPane zu machen, wie bei der Main Seite hätten wir left
+                als ein BorderPane zu machen, wie bei der Main Seite hätten wir "left"
                 eine Navbar, während im Center der Content ist.
                 Für das Dashboard selbst schlage ich viellecht eine TilePane vor.
                 Ich stelle mir das irgendwie so vor, in jedem Tile gibt es etwas zu sehen:
@@ -24,3 +24,11 @@ TODOS für nächstes Mal:
 
                 Vorschlag: Wir machen das alles (center) im TabPane, der ertse Tab, der offen ist ist das Dashboard, wenn man
                 Fenster anklickt öffnet sich ein neuer Tab und so weiter...
+
+
+Datum: 02.06.2024
+TODOS:
+    - unternehmenView, Controller und unternehmenController richtig überprüfen, damit das MVC-Model funktioniert.
+    - speichern/laden implementierem, um ein Muster Unternehmen immer laden zu können. Dadurch können wir die GUI besser einschätzen.
+      Um in der GUI ein Muster Unternehmen zu erstellen, müssen wir soweiso in der View weiter machen, also werden wir Schritt für Schritt
+      die GUI Komponente implementieren, um ein Unternehmen zu verwalten.
