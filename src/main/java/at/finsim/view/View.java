@@ -86,6 +86,11 @@ public class View extends BorderPane {
         unternehmenButton.setOnAction(e -> setCenter(unternehmen));
         Button ueberUns = new Button("Über Uns");
 
+        Text ueberUnsText = new Text("FinSim - ein buchhalterisches Programm, entwickelt von: \n" +
+                "Jonas Mader & Nikodem Marek");
+
+        ueberUns.setOnAction(e -> setCenter(ueberUnsText));
+
         toolBar.getItems().addAll(unternehmenButton, ueberUns);
         leftPane.getChildren().addAll(toolBar);
 
