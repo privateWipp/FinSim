@@ -27,6 +27,7 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         FlowPane flowPane = new FlowPane();
         flowPane.setOrientation(Orientation.VERTICAL);
 
+        // -----------------NAME-----------------
         HBox nameHBox = new HBox();
         Label name = new Label("Name des Unternehmens:");
         TextField nameTF = new TextField();
@@ -35,6 +36,7 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         nameHBox.setSpacing(10);
         nameHBox.getChildren().addAll(name, nameTF);
 
+        // -----------------GRÜNDUNGSJAHR-----------------
         HBox gruendungsjahrHBox = new HBox();
         Label gruendungsjahr = new Label("Gründungsjahr:");
         TextField gruendungsjahrTF = new TextField();
@@ -43,6 +45,7 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         gruendungsjahrHBox.setSpacing(10);
         gruendungsjahrHBox.getChildren().addAll(gruendungsjahr, gruendungsjahrTF);
 
+        // -----------------BUDGET-----------------
         HBox budgetHBox = new HBox();
         Label budget = new Label("Budget:");
         TextField budgetTF = new TextField();
@@ -58,6 +61,9 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         ButtonType buttonType = new ButtonType("Hinzufügen", ButtonBar.ButtonData.APPLY);
         getDialogPane().getButtonTypes().add(buttonType);
 
+        /**
+         * => wenn auf "Hinzufügen"-Button gedrückt wird...
+         */
         this.setResultConverter(bt -> {
             if(bt == buttonType) {
                 try {

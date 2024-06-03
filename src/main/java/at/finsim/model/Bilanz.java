@@ -3,20 +3,35 @@ package at.finsim.model;
 import at.finsim.model.konto.Konto;
 import at.finsim.model.konto.aktivesBestandskonto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
 
-public class Bilanz {
-    private String bezeichnung;
-    private LocalDate datum;
-    private final ArrayList<ArrayList<aktivesBestandskonto>> aktiva;
-    private final ArrayList<ArrayList<Konto>> passiva;
-    private ArrayList<aktivesBestandskonto> anlagevermoegen;
-    private ArrayList<aktivesBestandskonto> umlaufvermoegen;
-    private ArrayList<Konto> eigenkapital;
-    private ArrayList<Konto> fremdkapital;
+/**
+ * @author Jonas Mader, Nikodem Marek
+ * @version 0.1
+ */
 
+public class Bilanz implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String bezeichnung;
+    private LocalDate datum; // das Datum der Bilanz AN SICH!
+    private final ArrayList<ArrayList<aktivesBestandskonto>> aktiva; // aktiva-Seite der Bilanz (aktive Bestandskonten)
+    private final ArrayList<ArrayList<Konto>> passiva; // passiva-Seite der Bilanz (sonst. Konten)
+    private ArrayList<aktivesBestandskonto> anlagevermoegen; // im Aktiva => 0
+    private ArrayList<aktivesBestandskonto> umlaufvermoegen; // im Aktiva => 1, 2
+    private ArrayList<Konto> eigenkapital; // im Passiva => 9
+    private ArrayList<Konto> fremdkapital; // im Passiva => 3
+
+    /**
+     * Konstruktor:
+     *
+     * @param bezeichnung
+     * @param datum
+     * @param kontenplan
+     * @throws ModelException
+     */
     public Bilanz(String bezeichnung, LocalDate datum, Kontenplan kontenplan) throws ModelException{
         setBezeichnung(bezeichnung);
         setDatum(datum);
@@ -42,6 +57,13 @@ public class Bilanz {
         }
     }
 
+    /**
+     * Eine Methode, die basierend auf der Kontoklasse (konto.getKontoklasse())
+     * das Konto, dem richtigen "Teil" der Bilanz zuweist
+     *
+     * @param konto
+     * @throws ModelException
+     */
     public void kontoHinzufuegen(Konto konto) throws ModelException {
         if(konto == null) {
             throw new ModelException("Das angegebene Konto ist ungültig!");
@@ -60,6 +82,12 @@ public class Bilanz {
         }
     }
 
+    /**
+     * Überprüft, ob die übergebene Bezeichnung gültig ist => nicht leer bzw. null!
+     *
+     * @param bezeichnung
+     * @throws ModelException
+     */
     public void setBezeichnung(String bezeichnung) throws ModelException {
         if(bezeichnung == null || bezeichnung.isEmpty()) {
             throw new ModelException("Die Bezeichnung der Bilanz darf nicht leer bzw. null sein!");
@@ -68,6 +96,12 @@ public class Bilanz {
         }
     }
 
+    /**
+     * Überprüft, ob das übergebene Datum gültig ist => nicht null!
+     *
+     * @param datum
+     * @throws ModelException
+     */
     public void setDatum(LocalDate datum) throws ModelException {
         if(datum == null) {
             throw new ModelException("Das Datum der Bilanz ist ungültig!");

@@ -54,9 +54,9 @@ public class View extends BorderPane {
         search.setPromptText("Suche");
         Button neuesUnternehmen = new Button("neues Unternehmen");
         Button runUnternehmen = new Button("Unternehmen öffnen");
-        Button openUnternehmen = new Button("Unternehmen importieren");
+        Button importUnternehmen = new Button("Unternehmen importieren");
         Button deleteUnternehmen = new Button("Unternehmen entfernen");
-        unternehmenTop.getChildren().addAll(search, neuesUnternehmen, runUnternehmen, openUnternehmen, deleteUnternehmen);
+        unternehmenTop.getChildren().addAll(search, neuesUnternehmen, runUnternehmen, importUnternehmen, deleteUnternehmen);
         unternehmen.setTop(unternehmenTop);
         unternehmen.setCenter(this.unternehmenListView);
 
@@ -66,6 +66,9 @@ public class View extends BorderPane {
             this.ctrl.runUnternehmen(this.unternehmenListView.getSelectionModel().getSelectedItem());
             // jetzige Stage closen (idk wie)
         });
+        importUnternehmen.setOnAction(e -> this.ctrl.laden());
+        deleteUnternehmen.disableProperty().bind(Bindings.isEmpty(this.unternehmenListView.getSelectionModel().getSelectedItems()));
+        deleteUnternehmen.setOnAction(e -> this.ctrl.deleteUnternehmen(this.unternehmenListView.getSelectionModel().getSelectedItem()));
 
         unternehmenTop.setSpacing(10);
         unternehmen.setPadding(new Insets(10, 20, 10 ,20));

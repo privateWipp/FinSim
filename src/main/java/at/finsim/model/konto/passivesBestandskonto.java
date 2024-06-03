@@ -3,14 +3,18 @@ package at.finsim.model.konto;
 import at.finsim.model.Eintrag;
 import at.finsim.model.ModelException;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 /**
  * Ein passives Bestandskonto hat ein Anfangsbestand und steigt im Haben
  */
-public class passivesBestandskonto extends Konto {
+public class passivesBestandskonto extends Konto implements Serializable {
+    private static final long serialVersionUID = 1L;
+
     /**
-     *Der Default-Konstruktor
+     *Der Default-Konstruktor:
+     *
      * @param bezeichnung Name
      * @param kontonummer Kennzahl
      * @param anfangsbestand Der Anfangsbestand
@@ -22,6 +26,14 @@ public class passivesBestandskonto extends Konto {
         //DAS DATUM IST INKORREKT → Das Jahr sollte das von dem aktuellen Geschäftsjahr sein
     }
 
+    /**
+     * Diese Methode dient dazu, den aktuellen Bestand der Bilanz
+     * des Unternehmens zu berechnen, um eventuelle Unebenheiten auszugleichen..
+     * (oder für Backend-Gründe)
+     *
+     * @author Jonas Mader
+     * @return sollSeite - habenSeite
+     */
     @Override
     public float berechneBestand() {
         float sollSeite = 0;

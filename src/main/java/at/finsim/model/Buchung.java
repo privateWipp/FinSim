@@ -2,6 +2,7 @@ package at.finsim.model;
 
 import at.finsim.model.konto.Konto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -9,15 +10,17 @@ import java.util.Objects;
 /**
  * Die Klasse Buchung wird hauptsächlich zu Visualisierungszwecken verwendet.
  */
-public class Buchung {
-    private String bezeichnung;
-    private String beleg;
-    private LocalDate datum;
-    private ArrayList<Konto> soll;
-    private ArrayList<Konto> haben;
+public class Buchung implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private String bezeichnung; // quasi der Name für die Buchung, Bsp.: Verkauf von Fahrrädern an Nachbar
+    private String beleg; // Art des Belegs, Bsp.: Kassabeleg, Eingangsrechnung, Kontoauszug
+    private LocalDate datum; // wann war diese Buchung?
+    private ArrayList<Konto> soll; // alle Konten der Buchung der Soll-Seite
+    private ArrayList<Konto> haben; // alle Konten der Buchung der Haben-Seite
 
     /**
-     * Der Default-Konstruktor
+     * Der Default-Konstruktor:
+     *
      * @param bezeichnung Name
      * @param beleg Belegart
      * @param datum Datum der Buchung
@@ -31,6 +34,12 @@ public class Buchung {
         this.haben = new ArrayList<>();
     }
 
+    /**
+     * Überprüft, ob die übergebene Bezeichnung gültig ist => nicht leer bzw. null!
+     *
+     * @param bezeichnung
+     * @throws ModelException
+     */
     public void setBezeichnung(String bezeichnung) throws ModelException {
         if (bezeichnung == null || bezeichnung.isEmpty()) {
             throw new ModelException("Die Bezeichnung des Kontos darf nicht leer bzw. null sein!");
@@ -39,6 +48,12 @@ public class Buchung {
         }
     }
 
+    /**
+     * Überprüft, ob die übergebene Art des Belegs gültig ist => nicht leer bzw. null!
+     *
+     * @param beleg
+     * @throws ModelException
+     */
     public void setBeleg(String beleg) throws ModelException {
         if(beleg == null || beleg.isEmpty()) {
             throw new ModelException("Die Art des Beleges der Buchung darf nicht leer bzw. null sein!");
@@ -47,6 +62,12 @@ public class Buchung {
         }
     }
 
+    /**
+     * Überprüft, ob das übergebene Datum gültig ist => nicht null!
+     *
+     * @param datum
+     * @throws ModelException
+     */
     public void setDatum(LocalDate datum) throws ModelException {
         if(datum == null) {
             throw new ModelException("Das Datum der zu eintragenden Buchung darf nicht null sein!");

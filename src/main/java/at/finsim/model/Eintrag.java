@@ -1,5 +1,6 @@
 package at.finsim.model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Objects;
 
@@ -9,7 +10,8 @@ import java.util.Objects;
  * @author Jonas & Nikodem
  * @version 0.1
  */
-public class Eintrag {
+public class Eintrag implements Serializable {
+    private static final long serialVersionUID = 1L;
 
     /**
      * Das Datum der Buchung
@@ -32,6 +34,12 @@ public class Eintrag {
         setBetrag(betrag);
     }
 
+    /**
+     * Überprüft, ob das übergebene Datum gültig ist => nicht null!
+     *
+     * @param datum
+     * @throws ModelException
+     */
     public void setDatum(LocalDate datum) throws ModelException {
         if (datum != null) {
             this.datum = datum;
@@ -40,6 +48,12 @@ public class Eintrag {
         }
     }
 
+    /**
+     * Überprüft, ob der übergebene Text gültig ist => nicht leer bzw. null!
+     *
+     * @param text
+     * @throws ModelException
+     */
     public void setText(String text) throws ModelException {
         if (text == null || text.isEmpty()) {
             throw new ModelException("Der Text der Buchung darf nicht leer bzw. null sein!");
@@ -48,6 +62,12 @@ public class Eintrag {
         }
     }
 
+    /**
+     * Überprüft, ob der übergebene Betrag des Eintrags gültig ist => GRÖßer 0!
+     *
+     * @param betrag
+     * @throws ModelException
+     */
     public void setBetrag(float betrag) throws ModelException {
         if(betrag < 0) {
             throw new ModelException("Der Betrag der Buchung darf nicht kleiner als Null sein!");

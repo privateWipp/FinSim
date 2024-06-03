@@ -3,6 +3,7 @@ package at.finsim.model.konto;
 import at.finsim.model.Eintrag;
 import at.finsim.model.ModelException;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Objects;
 
@@ -12,7 +13,8 @@ import java.util.Objects;
  * @author Jonas & Nikodem
  * @version 0.1
  */
-public abstract class Konto {
+public abstract class Konto implements Serializable {
+    private static final long serialVersionUID = 1L;
     /**
      * Der Name des Kontos
      */
@@ -32,7 +34,8 @@ public abstract class Konto {
     private ArrayList<Eintrag> haben;
 
     /**
-     * Der Default-Konstruktor
+     * Der Default-Konstruktor:
+     *
      * @param bezeichnung Name
      * @param kontonummer Kennzahl
      * @throws ModelException Exception für die Setter
@@ -44,6 +47,12 @@ public abstract class Konto {
         this.haben = new ArrayList<>();
     }
 
+    /**
+     * Überprüft, ob die übergebene Bezeichnung gültig ist -> nicht leer bzw. null
+     *
+     * @param bezeichnung
+     * @throws ModelException
+     */
     public void setBezeichnung(String bezeichnung) throws ModelException {
         if (bezeichnung == null || bezeichnung.isEmpty()) {
             throw new ModelException("Die Bezeichnung des Kontos darf nicht leer bzw. null sein!");
@@ -54,6 +63,7 @@ public abstract class Konto {
 
     /**
      * Überprüft, ob die übergebene Kontonummer gültig ist → Eine vierstellige positive Zahl
+     *
      * @param kontonummer Kennzahl
      * @throws  ModelException Wird bei einem ungültigen Parameter geworfen
      */
@@ -106,7 +116,8 @@ public abstract class Konto {
     }
 
     /**
-     *  Die Methode um einen Eintrag hinzuzufügen
+     * Die Methode, um einen Eintrag hinzuzufügen
+     *
      * @param eintragArrayList Es muss übergeben werden, ob auf die Soll oder Haben Seite der Eintrag gehört.
      * @param eintrag Eintrag
      * @throws ModelException Wird bei ungültigen Parametern geworfen
@@ -149,6 +160,7 @@ public abstract class Konto {
 
     /**
      * Berechnet den Bestand je nach Kontoart.
+     *
      * @return Der aktuelle Bestand des Kontos
      */
     public float berechneBestand() {
