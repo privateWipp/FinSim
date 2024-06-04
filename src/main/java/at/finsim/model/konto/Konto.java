@@ -182,7 +182,6 @@ public abstract class Konto implements Serializable {
 
     @Override
     public String toString() {
-        return "Bezeichnung: " + getBezeichnung() + ",\n" +
-                "Kontonummer.: " + getKontonummer();
+        return getKontonummer() + " : " + getBezeichnung();
     }
 }

@@ -1,6 +1,7 @@
 package at.finsim.control;
 
 import at.finsim.model.Kontenplan;
+import at.finsim.model.ModelException;
 import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.Konto;
 import at.finsim.view.addKontoDialog;
@@ -82,12 +83,17 @@ public class unternehmenController {
         }
     }
 
-    public void addKonto(Unternehmen unternehmen) {
+    public void addKonto() {
         addKontoDialog addKontoDialog = new addKontoDialog();
         Optional<Konto> k = addKontoDialog.showAndWait();
 
         k.ifPresent(konto -> {
+            try {
+                this.model.getKontenplan().kontoHinzufuegen(konto);
 
+            } catch (ModelException e) {
+                this.view.errorAlert("Konto erstellen", e.getMessage());
+            }
         });
     }
 }

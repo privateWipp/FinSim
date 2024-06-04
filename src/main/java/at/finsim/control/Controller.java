@@ -17,6 +17,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 /**
  * @author Jonas Mader, Nikodem Marek
  * @version 0.1
@@ -96,4 +103,23 @@ public class Controller {
             throw new RuntimeException(e);
         }
     }
+
+    public String readXmlFile() {
+        String filePath = "config.xml" ;
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder;
+        Document doc = null;
+        try {
+            dBuilder = dbFactory.newDocumentBuilder();
+            doc = dBuilder.parse(filePath);
+            doc.getDocumentElement().normalize();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        NodeList nList = doc.getElementsByTagName("directoryPath");
+        Node node = nList.item(0);
+        Element eElement = (Element) node;
+        return eElement.getTextContent();
+    }
+
 }

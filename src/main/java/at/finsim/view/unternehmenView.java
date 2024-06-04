@@ -1,6 +1,7 @@
 package at.finsim.view;
 
 import at.finsim.model.Unternehmen;
+import at.finsim.model.konto.Konto;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
@@ -10,13 +11,14 @@ import at.finsim.control.unternehmenController;
 import javafx.scene.text.Text;
 
 import java.time.LocalDate;
-import java.util.concurrent.Flow;
+import java.util.ArrayList;
 
 public class unternehmenView extends TabPane {
     private Unternehmen model;
     private unternehmenController ctrl;
     private Text grundInfosText, geschaeftsjahreText;
     private GridPane gp;
+    private ArrayList<Konto> kk0, kk1, kk2, kk3, kk4, kk5, kk6, kk7, kk8, kk9;
 
     public unternehmenView(Unternehmen unternehmen) {
         this.model = unternehmen;
@@ -69,6 +71,9 @@ public class unternehmenView extends TabPane {
         // Kontenplan: 4. Tab (Auflistung aller eingetragenen Konten inkl. Kontenklasse)
         FlowPane kontenplanFP = new FlowPane();
         kontenplanFP.setOrientation(Orientation.VERTICAL);
+
+        // All der TitledPane-Stuff
+        //TitledPane titledPane = new TitledPane("Kontenplan", updateKontenplan());
 
         Button addKonto = new Button("Konto hinzufügen");
         addKonto.setOnAction(e -> this.ctrl.addKonto());
@@ -138,6 +143,7 @@ public class unternehmenView extends TabPane {
             if (!eTab("Kontenplan")) {
                 Tab kontenplanTab = new Tab("Kontenplan", kontenplanFP);
                 getTabs().addAll(kontenplanTab);
+                updateKontenplan();
             }
         });
 
@@ -175,6 +181,10 @@ public class unternehmenView extends TabPane {
         return false;
     }
 
+    private void updateKontenplan() {
+
+    }
+
     public void refreshData() {
         this.grundInfosText.setText(this.model.getName() + "\n" +
                 this.model.getGruendungsjahr() + "\n" +
@@ -192,5 +202,13 @@ public class unternehmenView extends TabPane {
 
     public Text getGeschaeftsjahreText() {
         return this.geschaeftsjahreText;
+    }
+
+    public void errorAlert(String headerText, String contentText) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Fehler");
+        alert.setHeaderText(headerText);
+        alert.setContentText(contentText);
+        alert.showAndWait();
     }
 }

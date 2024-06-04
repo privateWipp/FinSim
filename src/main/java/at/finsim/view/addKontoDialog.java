@@ -42,7 +42,7 @@ public class addKontoDialog extends Dialog<Konto> {
          * => wenn auf "Hinzufügen"-Button gedrückt wird...
          */
         this.setResultConverter(bt -> {
-            if(bt == buttonType) {
+            if (bt == buttonType) {
                 try {
                     String kontonummerTFInput = kontonummerTF.getText();
                     String kontobezeichnungTFInput = kontobezeichnungTF.getText();
@@ -59,7 +59,8 @@ public class addKontoDialog extends Dialog<Konto> {
                         case 5, 6, 7:
                             return new Aufwandskonto(kontobezeichnungTFInput, kontonummerTFInput);
 
-                        // case 8: ...
+                        case 8:
+                            return new KontoartSelectDialog(kontobezeichnungTFInput, kontonummerTFInput).getResult();
                     }
                 } catch (ModelException me) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
