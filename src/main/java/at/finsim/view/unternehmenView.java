@@ -11,14 +11,16 @@ import at.finsim.control.unternehmenController;
 import javafx.scene.text.Text;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
 public class unternehmenView extends TabPane {
     private Unternehmen model;
     private unternehmenController ctrl;
-    private Text grundInfosText, geschaeftsjahreText;
+    private Text grundInfosText, geschaeftsjahreText, kontenplanText;
     private GridPane gp;
-    private ArrayList<Konto> kk0, kk1, kk2, kk3, kk4, kk5, kk6, kk7, kk8, kk9;
+    private FlowPane kontenplanFP;
+    private Button addKonto;
+    private TreeView<String> tree;
+    private TreeItem<String> rootItem, klasseItem;
 
     public unternehmenView(Unternehmen unternehmen) {
         this.model = unternehmen;
@@ -69,18 +71,25 @@ public class unternehmenView extends TabPane {
         GridPane geschaeftsjahreGP = new GridPane();
 
         // Kontenplan: 4. Tab (Auflistung aller eingetragenen Konten inkl. Kontenklasse)
-        FlowPane kontenplanFP = new FlowPane();
-        kontenplanFP.setOrientation(Orientation.VERTICAL);
+        this.kontenplanFP = new FlowPane();
+        this.kontenplanFP.setOrientation(Orientation.VERTICAL);
 
-        // All der TitledPane-Stuff
-        //TitledPane titledPane = new TitledPane("Kontenplan", updateKontenplan());
+        this.addKonto = new Button("Konto hinzufügen");
+        this.addKonto.setOnAction(e -> this.ctrl.addKonto());
+        this.kontenplanText = new Text("Kontenplan:");
 
-        Button addKonto = new Button("Konto hinzufügen");
-        addKonto.setOnAction(e -> this.ctrl.addKonto());
-        //Button removeKonto = new Button("Konto löschen");
-        Text kontenplanText = new Text("Kontenplan:");
+        this.rootItem = new TreeItem<String>("Kontenplan");
+        this.rootItem.setExpanded(true);
 
-        kontenplanFP.getChildren().addAll(addKonto, kontenplanText);
+        for(Integer kontoklasse: this.model.getKontenplan().getKonten().keySet()) {
+            TreeItem<String> klasseItem = new TreeItem<String>("Kontoklasse "  + kontoklasse);
+            this.rootItem.getChildren().add(klasseItem);
+        }
+
+        this.tree = new TreeView<String>(rootItem);
+        this.kontenplanFP.getChildren().addAll(this.addKonto, this.kontenplanText, this.tree);
+
+        updateKontenplan();
 
         // Bilanz: 5. Tab (Bilanz vom U.)
         GridPane bilanzGP = new GridPane();
@@ -181,8 +190,18 @@ public class unternehmenView extends TabPane {
         return false;
     }
 
-    private void updateKontenplan() {
+    public void updateKontenplan() {
+        for(TreeItem<String> klasseItem : this.rootItem.getChildren()) {
+            klasseItem.getChildren().clear();
+        }
 
+        for(Integer kontoklasse : this.model.getKontenplan().getKonten().keySet()) {
+            TreeItem<String> klasseItem = this.rootItem.getChildren().get(kontoklasse);
+            for(Konto konto : this.model.getKontenplan().getKonten().get(kontoklasse)) {
+                TreeItem<String> kontoItem = new TreeItem<String>(konto.getKontonummer() + " : " + konto.getBezeichnung());
+                klasseItem.getChildren().add(kontoItem);
+            }
+        }
     }
 
     public void refreshData() {

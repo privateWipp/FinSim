@@ -90,7 +90,7 @@ public class unternehmenController {
         k.ifPresent(konto -> {
             try {
                 this.model.getKontenplan().kontoHinzufuegen(konto);
-
+                this.view.updateKontenplan();
             } catch (ModelException e) {
                 this.view.errorAlert("Konto erstellen", e.getMessage());
             }
