@@ -21,6 +21,7 @@ public class unternehmenView extends TabPane {
     private Button addKonto;
     private TreeView<String> tree;
     private TreeItem<String> rootItem, klasseItem;
+    private TextArea kontenplanInfo;
 
     public unternehmenView(Unternehmen unternehmen) {
         this.model = unternehmen;
@@ -43,11 +44,13 @@ public class unternehmenView extends TabPane {
 
         Button speichernButton = new Button("Speichern");
         Button ladenButton = new Button("Laden");
+        Button neueBuchung = new Button("neue Buchung...");
 
         speichernButton.setOnAction(e -> this.ctrl.unternehmenSpeichern());
         ladenButton.setOnAction(e -> this.ctrl.unternehmenLaden());
+        neueBuchung.setOnAction(e -> this.ctrl.neueBuchung());
 
-        toolBar.getItems().addAll(speichernButton, ladenButton);
+        toolBar.getItems().addAll(speichernButton, ladenButton, neueBuchung);
         leftPane.getChildren().addAll(toolBar);
 
         dashboard.setLeft(leftPane);
@@ -87,6 +90,11 @@ public class unternehmenView extends TabPane {
         }
 
         this.tree = new TreeView<String>(rootItem);
+
+        this.kontenplanInfo = new TextArea();
+        this.kontenplanInfo.setEditable(false);
+        updateKontenplanInfo();
+
         this.kontenplanFP.getChildren().addAll(this.addKonto, this.kontenplanText, this.tree);
 
         updateKontenplan();
@@ -202,6 +210,16 @@ public class unternehmenView extends TabPane {
                 klasseItem.getChildren().add(kontoItem);
             }
         }
+    }
+
+    public void updateKontenplanInfo() {
+        this.tree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if(newValue != null) {
+                this.kontenplanInfo.setText("");
+            } else {
+                this.kontenplanInfo.setText("");
+            }
+        });
     }
 
     public void refreshData() {

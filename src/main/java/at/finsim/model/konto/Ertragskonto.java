@@ -4,7 +4,6 @@ import at.finsim.model.Eintrag;
 import at.finsim.model.ModelException;
 
 import java.io.Serializable;
-import java.time.LocalDate;
 
 /**
  * Ertragskonten sind erfolgs erhöhend

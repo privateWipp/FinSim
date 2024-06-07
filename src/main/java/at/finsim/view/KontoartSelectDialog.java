@@ -4,7 +4,6 @@ import at.finsim.model.ModelException;
 import at.finsim.model.konto.Aufwandskonto;
 import at.finsim.model.konto.Ertragskonto;
 import at.finsim.model.konto.Konto;
-import at.finsim.model.konto.passivesBestandskonto;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;

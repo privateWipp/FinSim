@@ -1,13 +1,12 @@
 package at.finsim.control;
 
-import at.finsim.model.Kontenplan;
 import at.finsim.model.ModelException;
 import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.Konto;
 import at.finsim.view.addKontoDialog;
+import at.finsim.view.neueBuchungDialog;
 import at.finsim.view.unternehmenView;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -43,7 +42,7 @@ public class unternehmenController {
         FileChooser fc = new FileChooser();
         fc.setTitle("Unternehmen speichern");
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("fs-Datei", "*.fs");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("finsim-Datei", "*.finsim");
         fc.getExtensionFilters().add(extFilter);
 
         File desktopDir = new File(System.getProperty("user.home"), "Desktop");
@@ -67,7 +66,7 @@ public class unternehmenController {
         FileChooser fc = new FileChooser();
         fc.setTitle("Unternehmen laden");
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("fs-Datei", "*.fs");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("finsim-Datei", "*.finsim");
         fc.getExtensionFilters().add(extFilter);
 
         File desktopDir = new File(System.getProperty("user.home"), "Desktop");
@@ -95,5 +94,9 @@ public class unternehmenController {
                 this.view.errorAlert("Konto erstellen", e.getMessage());
             }
         });
+    }
+
+    public void neueBuchung() {
+        neueBuchungDialog neueBuchungDialog = new neueBuchungDialog();
     }
 }

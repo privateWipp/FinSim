@@ -4,7 +4,7 @@ package at.finsim.model;
  * Eigene Exception, weil Vorgabe...
  *
  * @author Jonas Mader
- * @version 0.1
+ * @version 0.2
  */
 
 public class ModelException extends Exception {
