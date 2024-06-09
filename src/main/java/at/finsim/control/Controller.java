@@ -13,14 +13,12 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
 
 /**
  * @author Jonas Mader, Nikodem Marek
@@ -71,8 +69,19 @@ public class Controller {
         stage.show();
     }
 
-    public void deleteUnternehmen(Unternehmen unternehmen) {
-        this.view.getUnternehmenListView().getItems().remove(unternehmen);
+    public void deleteUnternehmen(Unternehmen unternehmen) throws IOException {
+        Unternehmen selectedItem = this.view.getUnternehmenListView().getSelectionModel().getSelectedItem();
+        if(selectedItem != null) {
+            Path filePath = Paths.get("data", selectedItem.getDateiname());
+            try {
+                Files.delete(filePath);
+                this.view.getUnternehmenListView().getItems().remove(unternehmen);
+            } catch (NoSuchFileException e) {
+                this.view.errorAlert("Datei", "Ein solches File gibt es nicht...");
+            } catch (IOException e) {
+                this.view.errorAlert("Datei", e.getMessage());
+            }
+        }
         this.view.getUnternehmenListView().refresh();
     }
 
@@ -93,7 +102,7 @@ public class Controller {
         File file = fc.showOpenDialog(this.view.getScene().getWindow());
 
         try {
-            Unternehmen unternehmen = new Unternehmen("Name", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
+            Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
             unternehmen.laden(file);
             if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
                 this.view.getUnternehmenListView().getItems().add(unternehmen);
@@ -120,7 +129,7 @@ public class Controller {
             if (files != null) {
                 for (File file : files) {
                     try {
-                        Unternehmen unternehmen = new Unternehmen("Name", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
+                        Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
                         unternehmen.laden(file);
                         if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
                             this.view.getUnternehmenListView().getItems().add(unternehmen);

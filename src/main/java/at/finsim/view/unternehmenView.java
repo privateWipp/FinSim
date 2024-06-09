@@ -43,14 +43,12 @@ public class unternehmenView extends TabPane {
         toolBar.setPrefHeight(Integer.MAX_VALUE);
 
         Button speichernButton = new Button("Speichern");
-        Button ladenButton = new Button("Laden");
         Button neueBuchung = new Button("neue Buchung...");
 
         speichernButton.setOnAction(e -> this.ctrl.unternehmenSpeichern());
-        ladenButton.setOnAction(e -> this.ctrl.unternehmenLaden());
         neueBuchung.setOnAction(e -> this.ctrl.neueBuchung());
 
-        toolBar.getItems().addAll(speichernButton, ladenButton, neueBuchung);
+        toolBar.getItems().addAll(speichernButton, neueBuchung);
         leftPane.getChildren().addAll(toolBar);
 
         dashboard.setLeft(leftPane);
@@ -62,10 +60,11 @@ public class unternehmenView extends TabPane {
         grundInfosFP.setOrientation(Orientation.VERTICAL);
 
         Text unternehmenNameGross = new Text(this.model.getName());
+        Text unternehmenRechtsform = new Text(this.model.getRechtsform());
         Text unternehmenGruendungsJahr = new Text(Integer.toString(this.model.getGruendungsjahr()));
         Text bestehtSeit = new Text("Unternehmen besteht seit: " + (LocalDate.now().getYear() - this.model.getGruendungsjahr()) + " Jahren");
 
-        grundInfosFP.getChildren().addAll(unternehmenNameGross, unternehmenGruendungsJahr, bestehtSeit);
+        grundInfosFP.getChildren().addAll(unternehmenNameGross, unternehmenRechtsform, unternehmenGruendungsJahr, bestehtSeit);
 
         // Statistiken: 2. Tab
         GridPane statistikenGP = new GridPane();
@@ -108,6 +107,7 @@ public class unternehmenView extends TabPane {
 
         HBox grundInfosHBox = new HBox();
         this.grundInfosText = new Text(this.model.getName() + "\n" +
+                this.model.getRechtsform() + "\n" +
                 this.model.getGruendungsjahr() + "\n" +
                 this.model.getBudget());
         grundInfosHBox.getChildren().addAll(this.grundInfosText);
@@ -220,17 +220,6 @@ public class unternehmenView extends TabPane {
                 this.kontenplanInfo.setText("");
             }
         });
-    }
-
-    public void refreshData() {
-        this.grundInfosText.setText(this.model.getName() + "\n" +
-                this.model.getGruendungsjahr() + "\n" +
-                this.model.getBudget());
-
-        // STATISTIKEN FEHLEN NOCH!
-
-        this.geschaeftsjahreText.setText("Geschäftsjahre" + "\n" +
-                "(akt. " + Integer.toString(this.model.getAktuellesGeschaeftsjahr()) + ")");
     }
 
     public Text getGrundInfosText() {

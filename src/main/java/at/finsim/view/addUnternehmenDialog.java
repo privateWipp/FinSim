@@ -10,6 +10,13 @@ import javafx.scene.control.*;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
@@ -36,6 +43,17 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         nameHBox.setSpacing(10);
         nameHBox.getChildren().addAll(name, nameTF);
 
+        // -----------------RECHTSFORM-----------------
+        HBox rechtsformHBox = new HBox();
+        Label rechtsform = new Label("Rechtsform:");
+        ComboBox<String> rechtsformen = new ComboBox<String>();
+        rechtsformen.getItems().add("Einzelunternehmen");
+        rechtsformen.getItems().add("Personengesellschaft");
+        rechtsformen.getItems().add("Kapitalgesellschaft");
+        rechtsformHBox.setPadding(new Insets(0, 0, 10, 10));
+        rechtsformHBox.setSpacing(10);
+        rechtsformHBox.getChildren().addAll(rechtsform, rechtsformen);
+
         // -----------------GRÜNDUNGSJAHR-----------------
         HBox gruendungsjahrHBox = new HBox();
         Label gruendungsjahr = new Label("Gründungsjahr:");
@@ -55,7 +73,7 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
         budgetHBox.setSpacing(10);
         budgetHBox.getChildren().addAll(budget, budgetTF, eurSymbol);
 
-        flowPane.getChildren().addAll(nameHBox, gruendungsjahrHBox, budgetHBox);
+        flowPane.getChildren().addAll(nameHBox, rechtsformHBox, gruendungsjahrHBox, budgetHBox);
         getDialogPane().setContent(flowPane);
 
         ButtonType buttonType = new ButtonType("Hinzufügen", ButtonBar.ButtonData.APPLY);
@@ -72,7 +90,18 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
                     LocalDate now = LocalDate.now();
                     Kontenplan kontenplan = new Kontenplan();
                     ArrayList<Geschaeftsjahr> geschaeftsjahre = new ArrayList<Geschaeftsjahr>();
-                    return new Unternehmen(nameTF.getText(), gruendungsJahr1, now, geschaeftsjahre, kontenplan, budget1);
+                    Unternehmen u = new Unternehmen(nameTF.getText(), rechtsformen.valueProperty().get(), gruendungsJahr1, now, geschaeftsjahre, kontenplan, budget1);
+                    StringBuilder result = new StringBuilder();
+                    int i = 0;
+                    String replacement;
+                    for(char c : nameTF.getText().toCharArray()) {
+                        replacement = String.valueOf(nameTF.getText().charAt(i));
+                        result.append(replacement);
+                        i++;
+                    }
+                    u.setDateiname(result.toString());
+                    speichernUnternehmenFirst(u);
+                    return u;
                 } catch (ModelException me) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Fehler");
@@ -83,5 +112,33 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
             }
             return null;
         });
+    }
+
+    private void speichernUnternehmenFirst(Unternehmen unternehmen) {
+        Path dataDir = Paths.get("data");
+        if (!Files.exists(dataDir)) {
+            try {
+                Files.createDirectory(dataDir);
+            } catch (IOException e) {
+                e.printStackTrace();
+                return;
+            }
+        }
+
+        String fileName = unternehmen.getName().replaceAll("\\s+", "_") + ".fs";
+        Path filePath = dataDir.resolve(fileName);
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filePath.toFile()))) {
+            oos.writeObject(unternehmen.getName());
+            oos.writeObject(unternehmen.getRechtsform());
+            oos.writeObject(unternehmen.getGruendungsjahr());
+            oos.writeObject(unternehmen.getAktuellesDatum());
+            oos.writeObject(unternehmen.getGeschaeftsjahre());
+            oos.writeObject(unternehmen.getKontenplan());
+            oos.writeObject(unternehmen.getBudget());
+            oos.flush();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

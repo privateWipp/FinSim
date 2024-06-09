@@ -12,6 +12,8 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
+import java.io.IOException;
+
 /**
  * Die erste View Klasse für das GUI des Hauptfensters
  *
@@ -68,7 +70,13 @@ public class View extends BorderPane {
         });
         importUnternehmen.setOnAction(e -> this.ctrl.laden());
         deleteUnternehmen.disableProperty().bind(Bindings.isEmpty(this.unternehmenListView.getSelectionModel().getSelectedItems()));
-        deleteUnternehmen.setOnAction(e -> this.ctrl.deleteUnternehmen(this.unternehmenListView.getSelectionModel().getSelectedItem()));
+        deleteUnternehmen.setOnAction(e -> {
+            try {
+                this.ctrl.deleteUnternehmen(this.unternehmenListView.getSelectionModel().getSelectedItem());
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
 
         unternehmenTop.setSpacing(10);
         unternehmen.setPadding(new Insets(10, 20, 10 ,20));
@@ -99,7 +107,7 @@ public class View extends BorderPane {
         setLeft(leftPane);
 
         // ----------------------------------------------------------------------------------------
-        ctrl.ladenAlle();
+        this.ctrl.ladenAlle();
 
     }
 

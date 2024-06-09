@@ -62,43 +62,8 @@ public class unternehmenController {
         File file = fc.showSaveDialog(this.view.getScene().getWindow());
 
         try {
+            this.model.setDateiname(file.getName());
             this.model.speichern(file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Ebenfalls mithilfe eines FileChoosers (und der laden(...)-Methode im model)
-     * bekommt der Benutzer die Möglichkeit andere Unternehmen, die nicht gerade im selben Fenster
-     * geöffnet sind, zu öffnen und eben zu "laden"
-     */
-    public void unternehmenLaden() {
-        // Specify the path to your XML configuration file
-        String xmlFilePath = System.getProperty("user.dir") + File.separator + "config.xml";
-
-        // Get the default directory path from the XML file
-        String defaultDirectoryPath = ConfigReader.getDefaultDirectoryPath(xmlFilePath);
-
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Unternehmen laden");
-
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("fs-Datei", "*.fs");
-        fc.getExtensionFilters().add(extFilter);
-
-        File defaultDir = new File(defaultDirectoryPath);
-        if (defaultDir.exists() && defaultDir.isDirectory()) {
-            fc.setInitialDirectory(defaultDir);
-        } else {
-            File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-            fc.setInitialDirectory(desktopDir);
-        }
-
-        File file = fc.showOpenDialog(this.view.getScene().getWindow());
-
-        try {
-            this.model.laden(file);
-            this.view.refreshData();
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
         }
