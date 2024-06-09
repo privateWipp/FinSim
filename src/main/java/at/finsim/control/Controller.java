@@ -21,8 +21,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 
 /**
  * @author Jonas Mader, Nikodem Marek
@@ -78,48 +76,65 @@ public class Controller {
         this.view.getUnternehmenListView().refresh();
     }
 
+    /**
+     * Ermöglicht das Importieren von Unternehmen im Startfenster per FileChooser
+     */
     public void laden() {
+
         FileChooser fc = new FileChooser();
         fc.setTitle("Unternehmen laden");
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("fs-Datei", "*.fs");
         fc.getExtensionFilters().add(extFilter);
 
-        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-        fc.setInitialDirectory(desktopDir);
+            File desktopDir = new File(System.getProperty("user.home"), "Desktop");
+            fc.setInitialDirectory(desktopDir);
 
         File file = fc.showOpenDialog(this.view.getScene().getWindow());
 
         try {
             Unternehmen unternehmen = new Unternehmen("Name", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
             unternehmen.laden(file);
-            if(!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
+            if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
                 this.view.getUnternehmenListView().getItems().add(unternehmen);
                 this.view.getUnternehmenListView().refresh();
             } else {
-                this.view.errorAlert("Importieren", "Das zu öffnende Unternehmen ist bereits in der Liste eingetragen!");
+                this.view.errorAlert("Importieren", "Das Unternehmen ist bereits in der Liste eingetragen!");
             }
         } catch (ModelException | FileNotFoundException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public String readXmlFile() {
-        String filePath = "config.xml" ;
-        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
-        DocumentBuilder dBuilder;
-        Document doc = null;
-        try {
-            dBuilder = dbFactory.newDocumentBuilder();
-            doc = dBuilder.parse(filePath);
-            doc.getDocumentElement().normalize();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        NodeList nList = doc.getElementsByTagName("directoryPath");
-        Node node = nList.item(0);
-        Element eElement = (Element) node;
-        return eElement.getTextContent();
-    }
+    public void ladenAlle() {
+        // Specify the path to your XML configuration file
+        String xmlFilePath = System.getProperty("user.dir") + File.separator + "config.xml";
 
-}
+        // Get the default directory path from the XML file
+        String defaultDirectoryPath = ConfigReader.getDefaultDirectoryPath(xmlFilePath);
+
+        File defaultDir = new File(defaultDirectoryPath);
+
+        if (defaultDir.exists() && defaultDir.isDirectory()) {
+            File[] files = defaultDir.listFiles((dir, name) -> name.toLowerCase().endsWith(".fs"));
+            if (files != null) {
+                for (File file : files) {
+                    try {
+                        Unternehmen unternehmen = new Unternehmen("Name", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
+                        unternehmen.laden(file);
+                        if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
+                            this.view.getUnternehmenListView().getItems().add(unternehmen);
+                        } else {
+                            this.view.errorAlert("Importieren", "Das Unternehmen " + file.getName() + " ist bereits in der Liste eingetragen!");
+                        }
+                    } catch (ModelException | FileNotFoundException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                this.view.getUnternehmenListView().refresh();
+            }
+        } else {
+            this.view.errorAlert("Fehler", "Das Standardverzeichnis existiert nicht oder ist kein Verzeichnis.");
+        }
+    }
+    }

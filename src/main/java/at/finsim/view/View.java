@@ -99,7 +99,7 @@ public class View extends BorderPane {
         setLeft(leftPane);
 
         // ----------------------------------------------------------------------------------------
-
+        ctrl.ladenAlle();
 
     }
 

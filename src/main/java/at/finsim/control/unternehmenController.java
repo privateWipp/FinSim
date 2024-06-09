@@ -23,7 +23,7 @@ public class unternehmenController {
 
     /**
      * Konstruktor zum 2.-Controller
-     * (findet nur Anwendung wenn ein Unternehmen geöffnet wird)
+     * (findet nur Anwendung, wenn ein Unternehmen geöffnet wird)
      *
      * @param unternehmenView
      * @param unternehmen
@@ -34,19 +34,30 @@ public class unternehmenController {
     }
 
     /**
-     * Mit Hilfe eines FileChoosers (und der speichern(...)-Methode im model)
+     * Mithilfe eines FileChoosers (und der speichern(...)-Methode im model)
      * bekommt der Benutzer die Möglichkeit alles, was mit dem Unternehmen zutun hat,
      * in ein File abzuspeichern.
      */
     public void unternehmenSpeichern() {
+        // Specify the path to your XML configuration file
+        String xmlFilePath = System.getProperty("user.dir") + File.separator + "config.xml";
+
+        // Get the default directory path from the XML file
+        String defaultDirectoryPath = ConfigReader.getDefaultDirectoryPath(xmlFilePath);
+
         FileChooser fc = new FileChooser();
         fc.setTitle("Unternehmen speichern");
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("finsim-Datei", "*.finsim");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("fs-Datei", "*.fs");
         fc.getExtensionFilters().add(extFilter);
 
-        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-        fc.setInitialDirectory(desktopDir);
+        File defaultDir = new File(defaultDirectoryPath);
+        if (defaultDir.exists() && defaultDir.isDirectory()) {
+            fc.setInitialDirectory(defaultDir);
+        } else {
+            File desktopDir = new File(System.getProperty("user.home"), "Desktop");
+            fc.setInitialDirectory(desktopDir);
+        }
 
         File file = fc.showSaveDialog(this.view.getScene().getWindow());
 
@@ -58,19 +69,30 @@ public class unternehmenController {
     }
 
     /**
-     * Ebenfalls mit Hilfe eines FileChoosers (und der laden(...)-Methode im model)
+     * Ebenfalls mithilfe eines FileChoosers (und der laden(...)-Methode im model)
      * bekommt der Benutzer die Möglichkeit andere Unternehmen, die nicht gerade im selben Fenster
      * geöffnet sind, zu öffnen und eben zu "laden"
      */
     public void unternehmenLaden() {
+        // Specify the path to your XML configuration file
+        String xmlFilePath = System.getProperty("user.dir") + File.separator + "config.xml";
+
+        // Get the default directory path from the XML file
+        String defaultDirectoryPath = ConfigReader.getDefaultDirectoryPath(xmlFilePath);
+
         FileChooser fc = new FileChooser();
         fc.setTitle("Unternehmen laden");
 
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("finsim-Datei", "*.finsim");
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("fs-Datei", "*.fs");
         fc.getExtensionFilters().add(extFilter);
 
-        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-        fc.setInitialDirectory(desktopDir);
+        File defaultDir = new File(defaultDirectoryPath);
+        if (defaultDir.exists() && defaultDir.isDirectory()) {
+            fc.setInitialDirectory(defaultDir);
+        } else {
+            File desktopDir = new File(System.getProperty("user.home"), "Desktop");
+            fc.setInitialDirectory(desktopDir);
+        }
 
         File file = fc.showOpenDialog(this.view.getScene().getWindow());
 
