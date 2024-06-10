@@ -1,5 +1,7 @@
 package at.finsim.model;
 
+import at.finsim.model.konto.Aufwandskonto;
+import at.finsim.model.konto.Ertragskonto;
 import at.finsim.model.konto.Konto;
 import at.finsim.model.konto.aktivesBestandskonto;
 
@@ -140,6 +142,30 @@ public class Bilanz implements Serializable {
 
     public ArrayList<Konto> getFremdkapital() {
         return this.fremdkapital;
+    }
+
+    public float getUmsatz(){
+        float umsatz = 0;
+        for (Konto konto: eigenkapital){
+            if ((konto.getKontoklasse()==4||konto.getKontoklasse()==8)&&konto instanceof Ertragskonto){
+                umsatz+= konto.berechneBestand();
+            }
+        }
+        return umsatz;
+    }
+
+    public float getKosten(){
+        float kosten = 0;
+        for (Konto konto: eigenkapital){
+            if ((konto.getKontoklasse()!=4)&&konto instanceof Aufwandskonto){
+                kosten+= konto.berechneBestand();
+            }
+        }
+        return kosten;
+    }
+
+    public float getGewinn(){
+        return getUmsatz()-getKosten();
     }
 
     @Override

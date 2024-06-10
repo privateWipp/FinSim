@@ -1,9 +1,12 @@
 package at.finsim.view;
 
+import at.finsim.model.Geschaeftsjahr;
 import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.Konto;
+import javafx.css.converter.StringConverter;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
+import javafx.scene.chart.*;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -12,7 +15,7 @@ import javafx.scene.text.Text;
 
 import java.time.LocalDate;
 
-public class unternehmenView extends TabPane {
+public class    unternehmenView extends TabPane {
     private Unternehmen model;
     private unternehmenController ctrl;
     private Text grundInfosText, geschaeftsjahreText, kontenplanText;
@@ -59,18 +62,70 @@ public class unternehmenView extends TabPane {
         FlowPane grundInfosFP = new FlowPane();
         grundInfosFP.setOrientation(Orientation.VERTICAL);
 
-        Text unternehmenNameGross = new Text(this.model.getName());
-        Text unternehmenRechtsform = new Text(this.model.getRechtsform());
-        Text unternehmenGruendungsJahr = new Text(Integer.toString(this.model.getGruendungsjahr()));
-        Text bestehtSeit = new Text("Unternehmen besteht seit: " + (LocalDate.now().getYear() - this.model.getGruendungsjahr()) + " Jahren");
+        Label uebersicht = new Label("Gesamtübersicht der wichtigsten Informationen");
+        uebersicht.setStyle("-fx-font-size: 24");
 
-        grundInfosFP.getChildren().addAll(unternehmenNameGross, unternehmenRechtsform, unternehmenGruendungsJahr, bestehtSeit);
+        VBox allgemein = new VBox();
+        Label allgemeines = new Label("Allgemeines: \n");
+        Label unternehmenNameGross = new Label("Firmenname: "+ this.model.getName());
+        Label unternehmenRechtsform = new Label("Rechtsform: "+this.model.getRechtsform());
+        Label unternehmenGruendungsJahr = new Label("Gründungsjahr: "+this.model.getGruendungsjahr());
+        Label bestehtSeit = new Label("Unternehmen besteht seit: " + (LocalDate.now().getYear() - this.model.getGruendungsjahr()) + " Jahren");
+        allgemein.getChildren().addAll(allgemeines,unternehmenNameGross,unternehmenRechtsform,unternehmenGruendungsJahr,bestehtSeit);
+
+        VBox diagramm = new VBox();
+        diagramm.getChildren().add(new Label("Die wichtigsten KPIs im Vorjahr"));
+
+        if (model.getGeschaeftsjahre().size()>1) {
+            // Beispiel für ein Tortendiagramm für den Überblick
+            PieChart pieChart = new PieChart();
+            pieChart.getData().add(new PieChart.Data("Umsatz", model.getGeschaeftsjahre().get(model.getGeschaeftsjahre().size() - 1).getSchlussbilanz().getUmsatz()));
+            pieChart.getData().add(new PieChart.Data("Kosten", model.getGeschaeftsjahre().get(model.getGeschaeftsjahre().size() - 1).getSchlussbilanz().getKosten()));
+            pieChart.getData().add(new PieChart.Data("Gewinn", model.getGeschaeftsjahre().get(model.getGeschaeftsjahre().size() - 1).getSchlussbilanz().getGewinn()));
+            diagramm.getChildren().add(pieChart);
+        } else {
+            Label pieChartPlaceholder = new Label("Kein abgeschlossenes Geschäftsjahr vorhanden.");
+            diagramm.getChildren().add(pieChartPlaceholder);
+        }
+
+        grundInfosFP.getChildren().addAll(uebersicht,allgemein,diagramm);
+
+        grundInfosFP.setVgap(10);
+        grundInfosFP.setHgap(10);
 
         // Statistiken: 2. Tab
         GridPane statistikenGP = new GridPane();
 
         // Geschäftsjahre: 3. Tab (Auflistung aller Geschäftsjahre, evtl. Bilanz usw.)
-        GridPane geschaeftsjahreGP = new GridPane();
+        FlowPane geschaeftsjahre = new FlowPane();
+
+        VBox AdG = new VBox();
+        AdG.getChildren().add(new Label("Analyse der Geschäftsjahre"));
+
+        // Beispiel für ein Liniendiagramm für die Geschäftsjahre
+        CategoryAxis xAxis = new CategoryAxis();
+        xAxis.setLabel("Jahr");
+
+        NumberAxis yAxis = new NumberAxis();
+        yAxis.setLabel("Betrag");
+
+
+        BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
+
+        for (Geschaeftsjahr geschaeftsjahr: model.getGeschaeftsjahre()) {
+            if (!geschaeftsjahr.isAbgeschlossen()) continue;
+
+            XYChart.Series<String, Number> dataSeries = new XYChart.Series<>();
+            dataSeries.setName(String.valueOf(geschaeftsjahr.getJahr()));
+
+            dataSeries.getData().add(new XYChart.Data<>("Umsatz", geschaeftsjahr.getSchlussbilanz().getUmsatz()));
+
+            barChart.getData().add(dataSeries);
+        }
+
+        AdG.getChildren().add(barChart);
+
+        geschaeftsjahre.getChildren().addAll(AdG);
 
         // Kontenplan: 4. Tab (Auflistung aller eingetragenen Konten inkl. Kontenklasse)
         this.kontenplanFP = new FlowPane();
@@ -150,7 +205,7 @@ public class unternehmenView extends TabPane {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (!eTab("Geschäftsjahre")) {
-                    Tab geschaeftsjahreTab = new Tab("Geschäftsjahre", geschaeftsjahreGP);
+                    Tab geschaeftsjahreTab = new Tab("Geschäftsjahre", geschaeftsjahre);
                     getTabs().addAll(geschaeftsjahreTab);
                 }
             }
