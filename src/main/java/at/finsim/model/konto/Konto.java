@@ -68,7 +68,7 @@ public abstract class Konto implements Serializable {
      * @throws  ModelException Wird bei einem ungültigen Parameter geworfen
      */
     public void setKontonummer(String kontonummer) throws ModelException {
-        if (kontonummer == null || kontonummer.length() != 4) {
+        if (kontonummer == null || kontonummer.length() < 4) {
             throw new ModelException("Die Kontonummer muss immer vier Zeichen lang sein!");
         } else {
             try {

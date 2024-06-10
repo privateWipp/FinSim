@@ -1,9 +1,9 @@
 package at.finsim.view;
 
+import at.finsim.model.Buchung;
 import at.finsim.model.Geschaeftsjahr;
 import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.Konto;
-import javafx.css.converter.StringConverter;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
 import javafx.scene.chart.*;
@@ -15,16 +15,16 @@ import javafx.scene.text.Text;
 
 import java.time.LocalDate;
 
-public class    unternehmenView extends TabPane {
+public class unternehmenView extends TabPane {
     private Unternehmen model;
     private unternehmenController ctrl;
     private Text grundInfosText, geschaeftsjahreText, kontenplanText;
     private GridPane gp;
-    private FlowPane kontenplanFP;
     private Button addKonto;
     private TreeView<String> tree;
     private TreeItem<String> rootItem, klasseItem;
     private TextArea kontenplanInfo;
+    private ListView<Buchung> buchungen;
 
     public unternehmenView(Unternehmen unternehmen) {
         this.model = unternehmen;
@@ -67,16 +67,16 @@ public class    unternehmenView extends TabPane {
 
         VBox allgemein = new VBox();
         Label allgemeines = new Label("Allgemeines: \n");
-        Label unternehmenNameGross = new Label("Firmenname: "+ this.model.getName());
-        Label unternehmenRechtsform = new Label("Rechtsform: "+this.model.getRechtsform());
-        Label unternehmenGruendungsJahr = new Label("Gründungsjahr: "+this.model.getGruendungsjahr());
+        Label unternehmenNameGross = new Label("Firmenname: " + this.model.getName());
+        Label unternehmenRechtsform = new Label("Rechtsform: " + this.model.getRechtsform());
+        Label unternehmenGruendungsJahr = new Label("Gründungsjahr: " + this.model.getGruendungsjahr());
         Label bestehtSeit = new Label("Unternehmen besteht seit: " + (LocalDate.now().getYear() - this.model.getGruendungsjahr()) + " Jahren");
-        allgemein.getChildren().addAll(allgemeines,unternehmenNameGross,unternehmenRechtsform,unternehmenGruendungsJahr,bestehtSeit);
+        allgemein.getChildren().addAll(allgemeines, unternehmenNameGross, unternehmenRechtsform, unternehmenGruendungsJahr, bestehtSeit);
 
         VBox diagramm = new VBox();
         diagramm.getChildren().add(new Label("Die wichtigsten KPIs im Vorjahr"));
 
-        if (model.getGeschaeftsjahre().size()>1) {
+        if (model.getGeschaeftsjahre().size() > 1) {
             // Beispiel für ein Tortendiagramm für den Überblick
             PieChart pieChart = new PieChart();
             pieChart.getData().add(new PieChart.Data("Umsatz", model.getGeschaeftsjahre().get(model.getGeschaeftsjahre().size() - 1).getSchlussbilanz().getUmsatz()));
@@ -88,7 +88,7 @@ public class    unternehmenView extends TabPane {
             diagramm.getChildren().add(pieChartPlaceholder);
         }
 
-        grundInfosFP.getChildren().addAll(uebersicht,allgemein,diagramm);
+        grundInfosFP.getChildren().addAll(uebersicht, allgemein, diagramm);
 
         grundInfosFP.setVgap(10);
         grundInfosFP.setHgap(10);
@@ -112,7 +112,7 @@ public class    unternehmenView extends TabPane {
 
         BarChart<String, Number> barChart = new BarChart<>(xAxis, yAxis);
 
-        for (Geschaeftsjahr geschaeftsjahr: model.getGeschaeftsjahre()) {
+        for (Geschaeftsjahr geschaeftsjahr : model.getGeschaeftsjahre()) {
             if (!geschaeftsjahr.isAbgeschlossen()) continue;
 
             XYChart.Series<String, Number> dataSeries = new XYChart.Series<>();
@@ -125,11 +125,11 @@ public class    unternehmenView extends TabPane {
 
         AdG.getChildren().add(barChart);
 
-        geschaeftsjahre.getChildren().addAll(AdG);
+        geschaeftsjahre.getChildren().add(AdG);
 
         // Kontenplan: 4. Tab (Auflistung aller eingetragenen Konten inkl. Kontenklasse)
-        this.kontenplanFP = new FlowPane();
-        this.kontenplanFP.setOrientation(Orientation.VERTICAL);
+        FlowPane kontenplanFP = new FlowPane();
+        kontenplanFP.setOrientation(Orientation.VERTICAL);
 
         this.addKonto = new Button("Konto hinzufügen");
         this.addKonto.setOnAction(e -> this.ctrl.addKonto());
@@ -149,11 +149,19 @@ public class    unternehmenView extends TabPane {
         this.kontenplanInfo.setEditable(false);
         updateKontenplanInfo();
 
-        this.kontenplanFP.getChildren().addAll(this.addKonto, this.kontenplanText, this.tree);
+        kontenplanFP.getChildren().addAll(this.addKonto, this.kontenplanText, this.tree);
 
         updateKontenplan();
 
-        // Bilanz: 5. Tab (Bilanz vom U.)
+        // Buchungen: 5. Tab (Alle (laufenden/abgeschlossenen) Buchungen vom Unternehmen)
+        BorderPane buchungenBP = new BorderPane();
+        this.buchungen = new ListView<Buchung>();
+        Text buchungenInfo = new Text("Oben wird eine Liste mit allen bisherigen (laufenden/abgeschlossenen) Buchungen\n" +
+                "im Unternehmen dargestellt.");
+        buchungenBP.setCenter(this.buchungen);
+        buchungenBP.setBottom(buchungenInfo);
+
+        // Bilanz: 6. Tab (Bilanz vom U.)
         GridPane bilanzGP = new GridPane();
 
         // -------------------------------------------------------------------
@@ -165,38 +173,29 @@ public class    unternehmenView extends TabPane {
                 this.model.getRechtsform() + "\n" +
                 this.model.getGruendungsjahr() + "\n" +
                 this.model.getBudget());
-        grundInfosHBox.getChildren().addAll(this.grundInfosText);
-
-        HBox statistikenHBox = new HBox();
-        statistikenHBox.getChildren().addAll();
+        grundInfosHBox.getChildren().add(this.grundInfosText);
 
         HBox geschaeftsjahreHBox = new HBox();
         this.geschaeftsjahreText = new Text("Geschäftsjahre" + "\n" +
                 "(akt. " + Integer.toString(this.model.getAktuellesGeschaeftsjahr()) + ")");
-        geschaeftsjahreHBox.getChildren().addAll(this.geschaeftsjahreText);
+        geschaeftsjahreHBox.getChildren().add(this.geschaeftsjahreText);
 
         Button kontenplanButton = new Button("Kontenplan");
 
+        HBox buchungenHBox = new HBox();
+        Text buchungenText = new Text("Buchungen");
+        buchungenHBox.getChildren().addAll(buchungenText);
+
         HBox bilanzHBox = new HBox();
         Text bilanzText = new Text("akt. Bilanz");
-        bilanzHBox.getChildren().addAll(bilanzText);
+        bilanzHBox.getChildren().add(bilanzText);
 
         grundInfosHBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
                 if (!eTab("Grund-Infos")) {
                     Tab grundInfosTab = new Tab("Grund-Infos", grundInfosFP);
-                    getTabs().addAll(grundInfosTab);
-                }
-            }
-        });
-
-        statistikenHBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent mouseEvent) {
-                if (!eTab("Statistiken")) {
-                    Tab statistikenTab = new Tab("Statistiken", statistikenGP);
-                    getTabs().addAll(statistikenTab);
+                    getTabs().add(grundInfosTab);
                 }
             }
         });
@@ -206,7 +205,7 @@ public class    unternehmenView extends TabPane {
             public void handle(MouseEvent mouseEvent) {
                 if (!eTab("Geschäftsjahre")) {
                     Tab geschaeftsjahreTab = new Tab("Geschäftsjahre", geschaeftsjahre);
-                    getTabs().addAll(geschaeftsjahreTab);
+                    getTabs().add(geschaeftsjahreTab);
                 }
             }
         });
@@ -214,8 +213,18 @@ public class    unternehmenView extends TabPane {
         kontenplanButton.setOnAction(e -> {
             if (!eTab("Kontenplan")) {
                 Tab kontenplanTab = new Tab("Kontenplan", kontenplanFP);
-                getTabs().addAll(kontenplanTab);
+                getTabs().add(kontenplanTab);
                 updateKontenplan();
+            }
+        });
+
+        buchungenHBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent mouseEvent) {
+                if(!eTab("Buchungen")) {
+                    Tab buchungenTab = new Tab("Buchungen", buchungenBP);
+                    getTabs().add(buchungenTab);
+                }
             }
         });
 
@@ -224,15 +233,15 @@ public class    unternehmenView extends TabPane {
             public void handle(MouseEvent mouseEvent) {
                 if (!eTab("Bilanz")) {
                     Tab bilanzTab = new Tab("Bilanz", bilanzGP);
-                    getTabs().addAll(bilanzTab);
+                    getTabs().add(bilanzTab);
                 }
             }
         });
 
         this.gp.add(grundInfosHBox, 0, 0, 1, 1);
-        this.gp.add(statistikenHBox, 1, 0, 1, 1);
         this.gp.add(geschaeftsjahreHBox, 2, 0, 1, 1);
         this.gp.add(kontenplanButton, 0, 1, 1, 1);
+        this.gp.add(buchungenHBox, 0, 1, 2, 3);
         this.gp.add(bilanzHBox, 20, 20, 1, 1);
 
         dashboard.setCenter(this.gp);
@@ -283,6 +292,10 @@ public class    unternehmenView extends TabPane {
 
     public Text getGeschaeftsjahreText() {
         return this.geschaeftsjahreText;
+    }
+
+    public ListView<Buchung> getBuchungen() {
+        return this.buchungen;
     }
 
     public void errorAlert(String headerText, String contentText) {

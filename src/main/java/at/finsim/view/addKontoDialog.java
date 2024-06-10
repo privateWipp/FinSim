@@ -59,8 +59,8 @@ public class addKontoDialog extends Dialog<Konto> {
                         case 5, 6, 7:
                             return new Aufwandskonto(kontobezeichnungTFInput, kontonummerTFInput);
 
-                        case 8:
-                            return new KontoartSelectDialog(kontobezeichnungTFInput, kontonummerTFInput).getResult();
+                        //case 8:
+                        //    return new KontoartSelectDialog(kontobezeichnungTFInput, kontonummerTFInput).getResult();
                     }
                 } catch (ModelException me) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);

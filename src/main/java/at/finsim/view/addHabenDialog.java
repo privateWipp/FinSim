@@ -13,13 +13,13 @@ import javafx.scene.layout.HBox;
 import java.time.LocalDate;
 import java.util.ArrayList;
 
-public class addSollDialog extends Dialog<KontoBetrag> {
+public class addHabenDialog extends Dialog<KontoBetrag> {
     private Unternehmen model;
 
-    public addSollDialog(Unternehmen unternehmen) {
+    public addHabenDialog(Unternehmen unternehmen) {
         this.model = unternehmen;
 
-        setTitle("Soll-Seite bearbeiten");
+        setTitle("Haben-Seite bearbeiten");
         FlowPane flowPane = new FlowPane();
         flowPane.setOrientation(Orientation.VERTICAL);
 
@@ -27,7 +27,7 @@ public class addSollDialog extends Dialog<KontoBetrag> {
         HBox bezeichnungHBox = new HBox();
         Label bezeichnung = new Label("Bezeichnung:");
         TextField bezeichnungTF = new TextField();
-        bezeichnungTF.setPromptText("z.B.: Fahrrad kauf für Enkel, ...");
+        bezeichnungTF.setPromptText("z.B.: Fahrrad kauf für Enkelin, ...");
         bezeichnungHBox.getChildren().addAll(bezeichnung, bezeichnungTF);
         bezeichnungHBox.setPadding(new Insets(0, 0, 10, 10));
         bezeichnungHBox.setSpacing(10);
@@ -36,7 +36,7 @@ public class addSollDialog extends Dialog<KontoBetrag> {
         HBox kontonummerHBox = new HBox();
         Label kontonummer = new Label("Kontonummer:");
         TextField kontonummerTF = new TextField();
-        kontonummerTF.setPromptText("z.B.: 0620, 5010, 4000, ...");
+        kontonummerTF.setPromptText("z.B.: 0630, 7380, 4400, ...");
         kontonummerHBox.getChildren().addAll(kontonummer, kontonummerTF);
         kontonummerHBox.setPadding(new Insets(0, 0, 10, 10));
         kontonummerHBox.setSpacing(10);
@@ -53,11 +53,11 @@ public class addSollDialog extends Dialog<KontoBetrag> {
         flowPane.getChildren().addAll(bezeichnungHBox, kontonummerHBox, betragHBox);
         getDialogPane().setContent(flowPane);
 
-        ButtonType buttonType = new ButtonType("+ Soll", ButtonBar.ButtonData.APPLY);
+        ButtonType buttonType = new ButtonType("+ Haben", ButtonBar.ButtonData.APPLY);
         getDialogPane().getButtonTypes().add(buttonType);
 
         /**
-         * => wenn auf "+ Soll"-Button gedrückt wird...
+         * => wenn auf "+ Haben"-Button gedrückt wird...
          */
         this.setResultConverter(bt -> {
             if (bt == buttonType) {
@@ -78,7 +78,7 @@ public class addSollDialog extends Dialog<KontoBetrag> {
                 try {
                     if (vorhanden) { // Wenn Konto schon im Kontenplan eingetragen ist...
                         Eintrag eintrag = new Eintrag(LocalDate.now(), bezeichnungTFInput, betragTFInput);
-                        tmp.getSoll().add(eintrag);
+                        tmp.getHaben().add(eintrag);
                         return new KontoBetrag(tmp, betragTFInput);
                     } else { // Wenn nicht...
                         switch (getFirstDigit(kontonummerTFInput)) {
@@ -102,7 +102,7 @@ public class addSollDialog extends Dialog<KontoBetrag> {
                 } catch (ModelException me) {
                     Alert alert = new Alert(Alert.AlertType.ERROR);
                     alert.setTitle("Fehler");
-                    alert.setHeaderText("+ Soll erstellen");
+                    alert.setHeaderText("+ Haben erstellen");
                     alert.setContentText(me.getMessage());
                     alert.showAndWait();
                 }

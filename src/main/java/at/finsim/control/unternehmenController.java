@@ -87,7 +87,7 @@ public class unternehmenController {
     }
 
     public void neueBuchung() {
-        neueBuchungDialog neueBuchungDialog = new neueBuchungDialog(this.model);
+        neueBuchungDialog neueBuchungDialog = new neueBuchungDialog(this.model, this.view);
         Optional<Buchung> b = neueBuchungDialog.showAndWait();
 
         b.ifPresent(buchung -> {
