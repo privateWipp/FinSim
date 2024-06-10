@@ -1,99 +1,85 @@
 package at.finsim.view;
 
+import at.finsim.control.buchungController;
 import at.finsim.model.Buchung;
-import javafx.geometry.Orientation;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.FlowPane;
+import at.finsim.model.ModelException;
+import at.finsim.model.Unternehmen;
+import at.finsim.model.konto.Konto;
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 
 public class neueBuchungDialog extends Dialog<Buchung> {
-    public neueBuchungDialog() {
-        setTitle("Buchung erstellen");
-        FlowPane flowPane = new FlowPane();
-        flowPane.setOrientation(Orientation.VERTICAL);
+    private buchungController ctrl;
+    private Unternehmen unternehmen;
+    private ListView<Konto> soll;
+    private ListView<Konto> haben;
+    private TextArea infos;
 
-        ComboBox<String> comboBoxZeilen = new ComboBox<String>();
-        comboBoxZeilen.getItems().add("1 Zeilen");
-        comboBoxZeilen.getItems().add("2 Zeilen");
-        comboBoxZeilen.getItems().add("3 Zeilen");
+    public neueBuchungDialog(Unternehmen unternehmen) {
+        this.unternehmen = unternehmen;
+        this.ctrl = new buchungController(unternehmen);
+        this.soll = new ListView<Konto>();
+        Text an = new Text("an (/)");
+        this.haben = new ListView<Konto>();
+        this.infos = new TextArea();
+        this.infos.setEditable(false);
+        this.infos.setText("links: Soll\n" +
+                "an\n" +
+                "rechts: Haben\n" +
+                "------------------------------------------------\n" +
+                "Buchungen werden NICHT überprüft!\n" +
+                "Bitte nur SINNVOLLE Buchungen durchführen und eintragen.");
 
-        comboBoxZeilen.valueProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null) {
-                if(newValue.equals("1 Zeilen")) {
-                    Text erklaerung = new Text("Syntax: \n" + "Kontonummer, Kontobezeichnung");
+        setTitle("neue Buchung erstellen..");
 
-                    HBox buchungHBox = new HBox();
-                    TextField sollKontonummer = new TextField();
-                    TextField sollKontobezeichnung = new TextField();
-                    Text an = new Text("/");
-                    TextField habenKontonummer = new TextField();
-                    TextField habenKontobezeichnung = new TextField();
+        BorderPane bp = new BorderPane(); // Left, Center, Right
 
-                    buchungHBox.getChildren().addAll(sollKontonummer, sollKontobezeichnung, an, habenKontonummer, habenKontobezeichnung);
+        HBox buchungButtons = new HBox();
 
-                    flowPane.getChildren().add(buchungHBox);
-                } else if(newValue.equals("2 Zeilen")) {
-                    Text erklaerung = new Text("Syntax: \n" + "Kontonummer, Kontobezeichnung");
+        Button addSoll = new Button("+ Soll");
+        Button removeSoll = new Button("- Soll");
+        Button addHaben = new Button("+ Haben");
+        Button removeHaben = new Button("- Haben");
 
-                    // -----------------1. Zeile-----------------
-                    HBox zeile1BuchungHBox = new HBox();
-                    TextField sollKontonummer1 = new TextField();
-                    TextField sollKontobezeichnung1 = new TextField();
-                    Text an1 = new Text("/");
-                    TextField habenKontonummer1 = new TextField();
-                    TextField habenKontobezeichnung1 = new TextField();
+        removeSoll.disableProperty().bind(this.soll.getSelectionModel().selectedItemProperty().isNull());
+        removeHaben.disableProperty().bind(this.haben.getSelectionModel().selectedItemProperty().isNull());
 
-                    // -----------------2. Zeile-----------------
-                    HBox zeile2BuchungHBox = new HBox();
-                    TextField sollKontonummer2 = new TextField();
-                    TextField sollKontobezeichnung2 = new TextField();
-                    Text an2 = new Text("/");
-                    TextField habenKontonummer2 = new TextField();
-                    TextField habenKontobezeichnung2 = new TextField();
+        addSoll.setOnAction(e -> this.ctrl.addSoll());
 
-                    zeile1BuchungHBox.getChildren().addAll(sollKontonummer1, sollKontobezeichnung1, an1, habenKontonummer1, habenKontobezeichnung1);
-                    zeile2BuchungHBox.getChildren().addAll(sollKontonummer2, sollKontobezeichnung2, an2, habenKontonummer2, habenKontobezeichnung2);
+        buchungButtons.getChildren().addAll(addSoll, removeSoll, addHaben, removeHaben);
+        buchungButtons.setSpacing(10);
+        buchungButtons.setPadding(new Insets(10, 10, 10, 10));
 
-                    flowPane.getChildren().addAll(zeile1BuchungHBox, zeile2BuchungHBox);
-                } else {
-                    Text erklaerung = new Text("Syntax: \n" + "Kontonummer, Kontobezeichnung");
+        bp.setTop(buchungButtons);
+        bp.setLeft(this.soll);
+        bp.setCenter(an);
+        bp.setRight(this.haben);
+        bp.setBottom(this.infos);
 
-                    // -----------------1. Zeile-----------------
-                    HBox zeile1BuchungHBox = new HBox();
-                    TextField sollKontonummer1 = new TextField();
-                    TextField sollKontobezeichnung1 = new TextField();
-                    Text an1 = new Text("/");
-                    TextField habenKontonummer1 = new TextField();
-                    TextField habenKontobezeichnung1 = new TextField();
+        getDialogPane().setContent(bp);
 
-                    // -----------------2. Zeile-----------------
-                    HBox zeile2BuchungHBox = new HBox();
-                    TextField sollKontonummer2 = new TextField();
-                    TextField sollKontobezeichnung2 = new TextField();
-                    Text an2 = new Text("/");
-                    TextField habenKontonummer2 = new TextField();
-                    TextField habenKontobezeichnung2 = new TextField();
+        ButtonType buttonType = new ButtonType("Eintragen", ButtonBar.ButtonData.APPLY);
+        getDialogPane().getButtonTypes().add(buttonType);
 
-                    // -----------------3. Zeile-----------------
-                    HBox zeile3BuchungHBox = new HBox();
-                    TextField sollKontonummer3 = new TextField();
-                    TextField sollKontobezeichnung3 = new TextField();
-                    Text an3 = new Text("/");
-                    TextField habenKontonummer3 = new TextField();
-                    TextField habenKontobezeichnung3 = new TextField();
+        /**
+         * => wenn man auf "Eintragen"-Button gedrückt wird...
+         */
+        this.setResultConverter(bt -> {
+            if(bt == buttonType) {
+                /*try {
 
-                    zeile1BuchungHBox.getChildren().addAll(sollKontonummer1, sollKontobezeichnung1, an1, habenKontonummer1, habenKontobezeichnung1);
-                    zeile2BuchungHBox.getChildren().addAll(sollKontonummer2, sollKontobezeichnung2, an2, habenKontonummer2, habenKontobezeichnung2);
-                    zeile3BuchungHBox.getChildren().addAll(sollKontonummer3, sollKontobezeichnung3, an3, habenKontonummer3, habenKontobezeichnung3);
-
-                    flowPane.getChildren().addAll(zeile1BuchungHBox, zeile2BuchungHBox, zeile3BuchungHBox);
-                }
+                } catch (ModelException me) {
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Fehler");
+                    alert.setHeaderText("Buchung erstellen");
+                    alert.setContentText(me.getMessage());
+                    alert.showAndWait();
+                }**/
             }
+            return null;
         });
-
-        flowPane.getChildren().addAll(comboBoxZeilen);
     }
 }

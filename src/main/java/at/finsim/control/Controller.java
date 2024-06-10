@@ -15,7 +15,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.*;
-import java.nio.file.attribute.BasicFileAttributes;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Optional;
@@ -71,8 +70,8 @@ public class Controller {
 
     public void deleteUnternehmen(Unternehmen unternehmen) throws IOException {
         Unternehmen selectedItem = this.view.getUnternehmenListView().getSelectionModel().getSelectedItem();
-        if(selectedItem != null) {
-            Path filePath = Paths.get("data", selectedItem.getDateiname());
+        if (selectedItem != null) {
+            Path filePath = Paths.get("data", selectedItem.getDateiname() + ".fs");
             try {
                 Files.delete(filePath);
                 this.view.getUnternehmenListView().getItems().remove(unternehmen);
@@ -89,29 +88,30 @@ public class Controller {
      * Ermöglicht das Importieren von Unternehmen im Startfenster per FileChooser
      */
     public void laden() {
-
         FileChooser fc = new FileChooser();
         fc.setTitle("Unternehmen laden");
 
         FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("fs-Datei", "*.fs");
         fc.getExtensionFilters().add(extFilter);
 
-            File desktopDir = new File(System.getProperty("user.home"), "Desktop");
-            fc.setInitialDirectory(desktopDir);
+        File desktopDir = new File(System.getProperty("user.home"), "Desktop");
+        fc.setInitialDirectory(desktopDir);
 
         File file = fc.showOpenDialog(this.view.getScene().getWindow());
 
-        try {
-            Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
-            unternehmen.laden(file);
-            if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
-                this.view.getUnternehmenListView().getItems().add(unternehmen);
-                this.view.getUnternehmenListView().refresh();
-            } else {
-                this.view.errorAlert("Importieren", "Das Unternehmen ist bereits in der Liste eingetragen!");
+        if (file != null) {
+            try {
+                Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
+                unternehmen.laden(file);
+                if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
+                    this.view.getUnternehmenListView().getItems().add(unternehmen);
+                    this.view.getUnternehmenListView().refresh();
+                } else {
+                    this.view.errorAlert("Importieren", "Das Unternehmen ist bereits in der Liste eingetragen!");
+                }
+            } catch (ModelException | FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
-        } catch (ModelException | FileNotFoundException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -146,4 +146,4 @@ public class Controller {
             this.view.errorAlert("Fehler", "Das Standardverzeichnis existiert nicht oder ist kein Verzeichnis.");
         }
     }
-    }
+}

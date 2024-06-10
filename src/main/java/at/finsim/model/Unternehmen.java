@@ -19,13 +19,13 @@ public class Unternehmen implements Serializable {
     /**
      * Konstruktor:
      *
-     * @param name Bezeichnung
-     * @param gruendungsjahr Jahr der Gründung
-     * @param rechtsform Rechtsform des Unternehmens
-     * @param aktuellesDatum das aktuelle Datum
+     * @param name            Bezeichnung
+     * @param gruendungsjahr  Jahr der Gründung
+     * @param rechtsform      Rechtsform des Unternehmens
+     * @param aktuellesDatum  das aktuelle Datum
      * @param geschaeftsjahre Geschäftsjahre
-     * @param kontenplan Kontenplan
-     * @param budget Budget
+     * @param kontenplan      Kontenplan
+     * @param budget          Budget
      * @throws ModelException Wird von Setter geworfen
      */
     public Unternehmen(String name, String rechtsform, int gruendungsjahr, LocalDate aktuellesDatum, ArrayList<Geschaeftsjahr> geschaeftsjahre, Kontenplan kontenplan, float budget) throws ModelException {
@@ -49,7 +49,7 @@ public class Unternehmen implements Serializable {
      * @throws ModelException
      */
     public void setName(String name) throws ModelException {
-        if(name == null || name.isEmpty()) {
+        if (name == null || name.isEmpty()) {
             throw new ModelException("Der Name des Unternehmens darf nicht leer bzw. null sein!");
         } else {
             this.name = name;
@@ -64,13 +64,13 @@ public class Unternehmen implements Serializable {
      * @throws ModelException
      */
     public void setRechtsform(String rechtsform) throws ModelException {
-        if(rechtsform == null || rechtsform.isEmpty()) {
+        if (rechtsform == null || rechtsform.isEmpty()) {
             throw new ModelException("Die Rechtsform des Unternehmens darf nicht leer bzw. null sein!");
         } else {
-            if(rechtsform.equals("Einzelunternehmen") || rechtsform.equals("Personengesellschaft") || rechtsform.equals("Kapitalgesellschaft")) {
+            if (rechtsform.equals("Einzelunternehmen") || rechtsform.equals("offene Gesellschaft") || rechtsform.equals("Kommanditgesellschaft") || rechtsform.equals("Gesellschaft mit beschränkter Haftung (GmbH)") || rechtsform.equals("Aktiengesellschaft (AG)")) {
                 this.rechtsform = rechtsform;
             } else {
-                throw new ModelException("gültige Rechtsformen: \n" + "Einzelunternehmen, Personengesellschaft, Kapitalgesellschaft!");
+                throw new ModelException("gültige Rechtsformen: \n" + "Einzelunternehmen, Personengesellschaft (offene Gesellschaft/Kommanditgesellschaft), Kapitalgesellschaft (Gesellschaft mit beschränkter Haftung (=GmbH)/Aktiengesellschaft (AG)!");
             }
         }
     }
@@ -82,7 +82,7 @@ public class Unternehmen implements Serializable {
      * @throws ModelException
      */
     public void setGruendungsjahr(int gruendungsjahr) throws ModelException {
-        if(gruendungsjahr < 0) {
+        if (gruendungsjahr < 0) {
             throw new ModelException("Ungültiges Gründungsjahr!");
         } else {
             this.gruendungsjahr = gruendungsjahr;
@@ -96,7 +96,7 @@ public class Unternehmen implements Serializable {
      * @throws ModelException
      */
     public void addGeschaeftsjahr(Geschaeftsjahr geschaeftsjahr) throws ModelException {
-        if(geschaeftsjahr == null) {
+        if (geschaeftsjahr == null) {
             throw new ModelException("Ungültiges Geschäftsjahr!");
         } else {
             this.geschaeftsjahre.add(geschaeftsjahr);
@@ -110,7 +110,7 @@ public class Unternehmen implements Serializable {
      * @throws ModelException
      */
     public void setKontenplan(Kontenplan kontenplan) throws ModelException {
-        if(kontenplan == null) {
+        if (kontenplan == null) {
             throw new ModelException("Ungültiger Kontenplan!");
         } else {
             this.kontenplan = kontenplan;
@@ -124,7 +124,7 @@ public class Unternehmen implements Serializable {
      * @throws ModelException
      */
     public void setBudget(float budget) throws ModelException {
-        if(budget < 0) {
+        if (budget < 0) {
             throw new ModelException("Das Budget des Unternehmens muss mindestens gleich Null sein!");
         } else {
             this.budget = budget;

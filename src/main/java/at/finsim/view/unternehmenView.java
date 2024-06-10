@@ -43,7 +43,7 @@ public class unternehmenView extends TabPane {
         toolBar.setPrefHeight(Integer.MAX_VALUE);
 
         Button speichernButton = new Button("Speichern");
-        Button neueBuchung = new Button("neue Buchung...");
+        Button neueBuchung = new Button("neue Buchung..");
 
         speichernButton.setOnAction(e -> this.ctrl.unternehmenSpeichern());
         neueBuchung.setOnAction(e -> this.ctrl.neueBuchung());
@@ -83,8 +83,8 @@ public class unternehmenView extends TabPane {
         this.rootItem = new TreeItem<String>("Kontenplan");
         this.rootItem.setExpanded(true);
 
-        for(Integer kontoklasse: this.model.getKontenplan().getKonten().keySet()) {
-            TreeItem<String> klasseItem = new TreeItem<String>("Kontoklasse "  + kontoklasse);
+        for (Integer kontoklasse : this.model.getKontenplan().getKonten().keySet()) {
+            TreeItem<String> klasseItem = new TreeItem<String>("Kontoklasse " + kontoklasse);
             this.rootItem.getChildren().add(klasseItem);
         }
 
@@ -199,13 +199,13 @@ public class unternehmenView extends TabPane {
     }
 
     public void updateKontenplan() {
-        for(TreeItem<String> klasseItem : this.rootItem.getChildren()) {
+        for (TreeItem<String> klasseItem : this.rootItem.getChildren()) {
             klasseItem.getChildren().clear();
         }
 
-        for(Integer kontoklasse : this.model.getKontenplan().getKonten().keySet()) {
+        for (Integer kontoklasse : this.model.getKontenplan().getKonten().keySet()) {
             TreeItem<String> klasseItem = this.rootItem.getChildren().get(kontoklasse);
-            for(Konto konto : this.model.getKontenplan().getKonten().get(kontoklasse)) {
+            for (Konto konto : this.model.getKontenplan().getKonten().get(kontoklasse)) {
                 TreeItem<String> kontoItem = new TreeItem<String>(konto.getKontonummer() + " : " + konto.getBezeichnung());
                 klasseItem.getChildren().add(kontoItem);
             }
@@ -214,7 +214,7 @@ public class unternehmenView extends TabPane {
 
     public void updateKontenplanInfo() {
         this.tree.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-            if(newValue != null) {
+            if (newValue != null) {
                 this.kontenplanInfo.setText("");
             } else {
                 this.kontenplanInfo.setText("");

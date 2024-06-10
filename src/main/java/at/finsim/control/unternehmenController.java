@@ -1,5 +1,6 @@
 package at.finsim.control;
 
+import at.finsim.model.Buchung;
 import at.finsim.model.ModelException;
 import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.Konto;
@@ -61,11 +62,13 @@ public class unternehmenController {
 
         File file = fc.showSaveDialog(this.view.getScene().getWindow());
 
-        try {
-            this.model.setDateiname(file.getName());
-            this.model.speichern(file);
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
+        if (file != null) {
+            try {
+                this.model.setDateiname(file.getName());
+                this.model.speichern(file);
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -77,13 +80,22 @@ public class unternehmenController {
             try {
                 this.model.getKontenplan().kontoHinzufuegen(konto);
                 this.view.updateKontenplan();
-            } catch (ModelException e) {
-                this.view.errorAlert("Konto erstellen", e.getMessage());
+            } catch (ModelException me) {
+                this.view.errorAlert("Konto erstellen", me.getMessage());
             }
         });
     }
 
     public void neueBuchung() {
-        neueBuchungDialog neueBuchungDialog = new neueBuchungDialog();
+        neueBuchungDialog neueBuchungDialog = new neueBuchungDialog(this.model);
+        Optional<Buchung> b = neueBuchungDialog.showAndWait();
+
+        b.ifPresent(buchung -> {
+            /**try {
+
+            } catch (ModelException me) {
+                this.view.errorAlert("Buchung erstellen", me.getMessage());
+            }**/
+        });
     }
 }
