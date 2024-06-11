@@ -9,6 +9,7 @@ import at.finsim.view.addHabenDialog;
 import at.finsim.view.addSollDialog;
 import javafx.scene.control.ListView;
 import at.finsim.view.unternehmenView;
+import at.finsim.view.neueBuchungDialog;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -16,21 +17,25 @@ import java.util.Optional;
 public class buchungController {
     private Unternehmen model;
     private unternehmenView view;
+    private neueBuchungDialog neueBuchungDialog;
 
-    public buchungController(Unternehmen unternehmen, unternehmenView unternehmenView) {
+    public buchungController(Unternehmen unternehmen, unternehmenView unternehmenView, neueBuchungDialog neueBuchungDialog) {
         this.model = unternehmen;
         this.view = unternehmenView;
+        this.neueBuchungDialog = neueBuchungDialog;
     }
 
-    public void addSoll(ListView<Konto> soll) {
+    public void addSoll(ListView<KontoBetrag> soll) {
         addSollDialog addSollDialog = new addSollDialog(model);
         Optional<KontoBetrag> k = addSollDialog.showAndWait();
 
         k.ifPresent(konto -> {
             try {
                 Eintrag eintrag = new Eintrag(LocalDate.now(), konto.getKonto().getBezeichnung(), konto.getBetrag());
+                this.neueBuchungDialog.addBetrag(konto.getBetrag());
                 konto.getKonto().getSoll().add(eintrag);
-                soll.getItems().add(konto.getKonto());
+                KontoBetrag sollKonto = new KontoBetrag(konto.getKonto(), konto.getBetrag());
+                soll.getItems().add(sollKonto);
                 soll.refresh();
             } catch (ModelException me) {
                 this.view.errorAlert("+ Soll-Konto erstellen", "Das angegebene +Soll-Konto konnte nicht erstellt werden!");
@@ -38,15 +43,17 @@ public class buchungController {
         });
     }
 
-    public void addHaben(ListView<Konto> haben) {
+    public void addHaben(ListView<KontoBetrag> haben) {
         addHabenDialog addHabenDialog = new addHabenDialog(model);
         Optional<KontoBetrag> k = addHabenDialog.showAndWait();
 
         k.ifPresent(konto -> {
             try {
                 Eintrag eintrag = new Eintrag(LocalDate.now(), konto.getKonto().getBezeichnung(), konto.getBetrag());
+                this.neueBuchungDialog.addBetrag(konto.getBetrag());
                 konto.getKonto().getHaben().add(eintrag);
-                haben.getItems().add(konto.getKonto());
+                KontoBetrag habenKonto = new KontoBetrag(konto.getKonto(), konto.getBetrag());
+                haben.getItems().add(habenKonto);
                 haben.refresh();
             } catch (ModelException me) {
                 this.view.errorAlert("+ Haben-Konto erstellen", "Das angegebene +Haben-Konto konnte nicht erstellt werden!");

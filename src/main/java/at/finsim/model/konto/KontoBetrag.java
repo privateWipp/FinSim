@@ -16,4 +16,9 @@ public class KontoBetrag {
     public float getBetrag() {
         return this.betrag;
     }
+
+    @Override
+    public String toString() {
+        return getKonto().getKontonummer() + " " + getKonto().getBezeichnung() + " | " + getBetrag();
+    }
 }

@@ -5,6 +5,7 @@ import at.finsim.model.ModelException;
 import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.Konto;
 import at.finsim.view.addKontoDialog;
+import at.finsim.view.editBuchungDialog;
 import at.finsim.view.neueBuchungDialog;
 import at.finsim.view.unternehmenView;
 import javafx.stage.FileChooser;
@@ -91,11 +92,23 @@ public class unternehmenController {
         Optional<Buchung> b = neueBuchungDialog.showAndWait();
 
         b.ifPresent(buchung -> {
-            /**try {
-
+            try {
+                this.model.addBuchung(buchung);
+                this.view.getBuchungen().getItems().add(buchung);
+                this.view.getBuchungen().refresh();
             } catch (ModelException me) {
                 this.view.errorAlert("Buchung erstellen", me.getMessage());
-            }**/
+            }
         });
+    }
+
+    public void removeBuchung(Buchung buchung) {
+        this.view.getBuchungen().getItems().remove(buchung);
+        this.model.getBuchungen().remove(buchung);
+        // Eintrag iwie rauslöschen...?
+    }
+
+    public void editBuchung(Buchung buchung) {
+        editBuchungDialog editBuchungDialog = new editBuchungDialog(this.model, this.view, buchung);
     }
 }

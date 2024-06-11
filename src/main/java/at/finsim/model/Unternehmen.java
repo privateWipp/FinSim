@@ -14,6 +14,7 @@ public class Unternehmen implements Serializable {
     private ArrayList<Geschaeftsjahr> geschaeftsjahre; // alle Geschäftsjahre des Unternehmens, dargestellt in einer ArrayList
     private Kontenplan kontenplan; // der Kontenplan des Unternehmens
     private float budget; // wie viel Budget hat das Unternehmen?
+    private ArrayList<Buchung> buchungen; // alle Buchungen (laufend/abgeschlossen) des Unternehmens
     private String dateiname; // Dateiname (=der Name, wie er im "data"-Folder steht)
 
     /**
@@ -26,9 +27,10 @@ public class Unternehmen implements Serializable {
      * @param geschaeftsjahre Geschäftsjahre
      * @param kontenplan      Kontenplan
      * @param budget          Budget
+     * @param buchungen       Buchungen
      * @throws ModelException Wird von Setter geworfen
      */
-    public Unternehmen(String name, String rechtsform, int gruendungsjahr, LocalDate aktuellesDatum, ArrayList<Geschaeftsjahr> geschaeftsjahre, Kontenplan kontenplan, float budget) throws ModelException {
+    public Unternehmen(String name, String rechtsform, int gruendungsjahr, LocalDate aktuellesDatum, ArrayList<Geschaeftsjahr> geschaeftsjahre, Kontenplan kontenplan, float budget, ArrayList<Buchung> buchungen) throws ModelException {
         setName(name);
         setRechtsform(rechtsform);
         setGruendungsjahr(gruendungsjahr);
@@ -38,6 +40,7 @@ public class Unternehmen implements Serializable {
         this.geschaeftsjahre.add(geschaeftsjahr);
         setKontenplan(kontenplan);
         setBudget(budget);
+        this.buchungen = new ArrayList<Buchung>();
         this.dateiname = getName();
     }
 
@@ -132,6 +135,40 @@ public class Unternehmen implements Serializable {
     }
 
     /**
+     * Diese Methode dient dazu, eine neue Buchung ins Unternehmen aufzunehmen.
+     *
+     * @param buchung:Buchung
+     */
+    public void addBuchung(Buchung buchung) throws ModelException {
+        if(buchung != null) {
+            if(!this.buchungen.contains(buchung)) {
+                this.buchungen.add(buchung);
+            } else {
+                throw new ModelException("Die angegebene Buchung ist bereits existent!");
+            }
+        } else {
+            throw new ModelException("Die übergebene Buchung darf nicht NULL sein!");
+        }
+    }
+
+    /**
+     * Diese Methode dient dazu, dass eine Buchung aus dem Unternehmen gelöscht werden kann.
+     *
+     * @param buchung:Buchung
+     */
+    public void removeBuchung(Buchung buchung) throws ModelException {
+        if(buchung != null) {
+            if(this.buchungen.contains(buchung)) {
+                this.buchungen.remove(buchung);
+            } else {
+                throw new ModelException("Die angegebene Buchung kann nicht entfernt werden, da diese nicht im Unternehmen existent ist!");
+            }
+        } else {
+            throw new ModelException("Die übergebene Buchung darf nicht NULL sein!");
+        }
+    }
+
+    /**
      * setzt den Dateinamen für das Unternehmen im "data"-Folder
      *
      * @param dateiname:String
@@ -179,6 +216,10 @@ public class Unternehmen implements Serializable {
         return this.budget;
     }
 
+    public ArrayList<Buchung> getBuchungen() {
+        return this.buchungen;
+    }
+
     public String getDateiname() {
         return this.dateiname;
     }
@@ -204,6 +245,7 @@ public class Unternehmen implements Serializable {
             oos.writeObject(getGeschaeftsjahre());
             oos.writeObject(getKontenplan());
             oos.writeObject(getBudget());
+            oos.writeObject(getBuchungen());
             oos.writeObject(getDateiname());
             oos.flush();
         } catch (IOException e) {
@@ -227,6 +269,7 @@ public class Unternehmen implements Serializable {
             this.geschaeftsjahre = (ArrayList<Geschaeftsjahr>) ois.readObject();
             this.kontenplan = (Kontenplan) ois.readObject();
             this.budget = (Float) ois.readObject();
+            this.buchungen = (ArrayList<Buchung>) ois.readObject();
             this.dateiname = (String) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);

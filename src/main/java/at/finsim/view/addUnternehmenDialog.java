@@ -1,9 +1,6 @@
 package at.finsim.view;
 
-import at.finsim.model.Geschaeftsjahr;
-import at.finsim.model.Kontenplan;
-import at.finsim.model.ModelException;
-import at.finsim.model.Unternehmen;
+import at.finsim.model.*;
 import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
@@ -162,7 +159,7 @@ public class addUnternehmenDialog extends Dialog<Unternehmen> {
                     int gruendungsJahr1 = Integer.parseInt(gruendungsjahrTF.getText());
                     float budget1 = Float.parseFloat(budgetTF.getText());
                     ArrayList<Geschaeftsjahr> geschaeftsjahre = new ArrayList<Geschaeftsjahr>();
-                    Unternehmen u = new Unternehmen(nameTF.getText(), getSelectedRechtsform(), gruendungsJahr1, LocalDate.now(), geschaeftsjahre, new Kontenplan(), budget1);
+                    Unternehmen u = new Unternehmen(nameTF.getText(), getSelectedRechtsform(), gruendungsJahr1, LocalDate.now(), geschaeftsjahre, new Kontenplan(), budget1, new ArrayList<Buchung>());
                     if (u.getRechtsform().equals("Gesellschaft mit beschränkter Haftung (GmbH)") || u.getRechtsform().equals("Aktiengesellschaft (AG)")) {
                         if (u.getBudget() < 10000) {
                             showWarning("ACHTUNG: \n" + "Das GmbH-Mindeststammkapital beträgt 10.000€!");

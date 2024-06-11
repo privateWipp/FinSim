@@ -5,6 +5,7 @@ import at.finsim.model.Geschaeftsjahr;
 import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.Konto;
 import javafx.event.EventHandler;
+import javafx.geometry.Insets;
 import javafx.geometry.Orientation;
 import javafx.scene.chart.*;
 import javafx.scene.control.*;
@@ -38,7 +39,8 @@ public class unternehmenView extends TabPane {
         BorderPane dashboard = new BorderPane();
 
         VBox leftPane = new VBox();
-        leftPane.setStyle("-fx-background-color: lightgray;");
+        leftPane.setStyle("-fx-background-color: #2c3e50;");
+        leftPane.setPadding(new javafx.geometry.Insets(20));
 
         ToolBar toolBar = new ToolBar();
         toolBar.setOrientation(Orientation.VERTICAL);
@@ -46,12 +48,10 @@ public class unternehmenView extends TabPane {
         toolBar.setPrefHeight(Integer.MAX_VALUE);
 
         Button speichernButton = new Button("Speichern");
-        Button neueBuchung = new Button("neue Buchung..");
 
         speichernButton.setOnAction(e -> this.ctrl.unternehmenSpeichern());
-        neueBuchung.setOnAction(e -> this.ctrl.neueBuchung());
 
-        toolBar.getItems().addAll(speichernButton, neueBuchung);
+        toolBar.getItems().addAll(speichernButton);
         leftPane.getChildren().addAll(toolBar);
 
         dashboard.setLeft(leftPane);
@@ -155,11 +155,39 @@ public class unternehmenView extends TabPane {
 
         // Buchungen: 5. Tab (Alle (laufenden/abgeschlossenen) Buchungen vom Unternehmen)
         BorderPane buchungenBP = new BorderPane();
+
+        HBox buchungBtsHBox = new HBox();
+        Button addBuchung = new Button("neue Buchung");
+        Button removeBuchung = new Button("Buchung rückgängig machen..");
+        Button editBuchung = new Button("Buchung bearbeiten/ansehen");
+        buchungBtsHBox.getChildren().addAll(addBuchung, removeBuchung, editBuchung);
+
         this.buchungen = new ListView<Buchung>();
-        Text buchungenInfo = new Text("Oben wird eine Liste mit allen bisherigen (laufenden/abgeschlossenen) Buchungen\n" +
+        updateBuchungen();
+
+        removeBuchung.disableProperty().bind(this.buchungen.getSelectionModel().selectedItemProperty().isNull());
+        editBuchung.disableProperty().bind(this.buchungen.getSelectionModel().selectedItemProperty().isNull());
+
+        addBuchung.setOnAction(e -> this.ctrl.neueBuchung());
+        removeBuchung.setOnAction(e -> this.ctrl.removeBuchung(this.buchungen.getSelectionModel().getSelectedItem()));
+        editBuchung.setOnAction(e -> this.ctrl.editBuchung(this.buchungen.getSelectionModel().getSelectedItem()));
+
+        TextArea buchungenTA = new TextArea();
+        buchungenTA.setEditable(false);
+        buchungenTA.setText("Oben wird eine Liste mit allen bisherigen (laufenden/abgeschlossenen) Buchungen\n" +
                 "im Unternehmen dargestellt.");
+        this.buchungen.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null) {
+                buchungenTA.setText("Details zu ausgewählter Buchung:\n" +
+                        newValue.toString());
+            } else {
+                buchungenTA.setText("Oben wird eine Liste mit allen bisherigen (laufenden/abgeschlossenen) Buchungen\n" +
+                        "im Unternehmen dargestellt.");
+            }
+        });
+        buchungenBP.setTop(buchungBtsHBox);
         buchungenBP.setCenter(this.buchungen);
-        buchungenBP.setBottom(buchungenInfo);
+        buchungenBP.setBottom(buchungenTA);
 
         // Bilanz: 6. Tab (Bilanz vom U.)
         GridPane bilanzGP = new GridPane();
@@ -167,9 +195,16 @@ public class unternehmenView extends TabPane {
         // -------------------------------------------------------------------
 
         this.gp = new GridPane();
+        gp.setPadding(new Insets(10));
+        gp.setVgap(10);
+        gp.setHgap(10);
+
+        Label title = new Label(model.getName()+"'s Dashboard");
+        title.setStyle("-fx-font-size: 24; -fx-font-weight: bold;");
+        GridPane.setConstraints(title, 0, 0);
 
         HBox grundInfosHBox = new HBox();
-        this.grundInfosText = new Text(this.model.getName() + "\n" +
+        this.grundInfosText = new Text(
                 this.model.getRechtsform() + "\n" +
                 this.model.getGruendungsjahr() + "\n" +
                 this.model.getBudget());
@@ -221,7 +256,7 @@ public class unternehmenView extends TabPane {
         buchungenHBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
-                if(!eTab("Buchungen")) {
+                if (!eTab("Buchungen")) {
                     Tab buchungenTab = new Tab("Buchungen", buchungenBP);
                     getTabs().add(buchungenTab);
                 }
@@ -238,11 +273,12 @@ public class unternehmenView extends TabPane {
             }
         });
 
-        this.gp.add(grundInfosHBox, 0, 0, 1, 1);
-        this.gp.add(geschaeftsjahreHBox, 2, 0, 1, 1);
-        this.gp.add(kontenplanButton, 0, 1, 1, 1);
-        this.gp.add(buchungenHBox, 0, 1, 2, 3);
-        this.gp.add(bilanzHBox, 20, 20, 1, 1);
+        this.gp.add(title, 0, 0,1,1);
+        this.gp.add(grundInfosHBox, 2, 1, 1, 1);
+        this.gp.add(geschaeftsjahreHBox, 3, 1, 1, 1);
+        this.gp.add(kontenplanButton, 2, 2, 1, 1);
+        this.gp.add(buchungenHBox, 3, 2, 2, 3);
+        this.gp.add(bilanzHBox, 4, 2, 1, 1);
 
         dashboard.setCenter(this.gp);
 
@@ -284,6 +320,15 @@ public class unternehmenView extends TabPane {
                 this.kontenplanInfo.setText("");
             }
         });
+    }
+
+    public void updateBuchungen() {
+        this.buchungen.getItems().clear();
+
+        for (Buchung buchung : this.model.getBuchungen()) {
+            this.buchungen.getItems().add(buchung);
+        }
+        this.buchungen.refresh();
     }
 
     public Text getGrundInfosText() {

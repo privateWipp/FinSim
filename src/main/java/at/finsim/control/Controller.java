@@ -1,9 +1,6 @@
 package at.finsim.control;
 
-import at.finsim.model.Geschaeftsjahr;
-import at.finsim.model.Kontenplan;
-import at.finsim.model.ModelException;
-import at.finsim.model.Unternehmen;
+import at.finsim.model.*;
 import at.finsim.view.View;
 import at.finsim.view.addUnternehmenDialog;
 import at.finsim.view.unternehmenView;
@@ -101,7 +98,7 @@ public class Controller {
 
         if (file != null) {
             try {
-                Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
+                Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000, new ArrayList<Buchung>());
                 unternehmen.laden(file);
                 if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
                     this.view.getUnternehmenListView().getItems().add(unternehmen);
@@ -129,7 +126,7 @@ public class Controller {
             if (files != null) {
                 for (File file : files) {
                     try {
-                        Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000);
+                        Unternehmen unternehmen = new Unternehmen("Name", "Einzelunternehmen", 2019, LocalDate.now(), new ArrayList<Geschaeftsjahr>(), new Kontenplan(), 450000, new ArrayList<Buchung>());
                         unternehmen.laden(file);
                         if (!(this.view.getUnternehmenListView().getItems().contains(unternehmen))) {
                             this.view.getUnternehmenListView().getItems().add(unternehmen);

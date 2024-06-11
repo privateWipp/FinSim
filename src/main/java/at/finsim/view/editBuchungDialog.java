@@ -1,35 +1,33 @@
 package at.finsim.view;
 
-import at.finsim.control.buchungController;
 import at.finsim.model.Buchung;
 import at.finsim.model.Eintrag;
 import at.finsim.model.ModelException;
 import at.finsim.model.Unternehmen;
-import at.finsim.model.konto.Konto;
 import at.finsim.model.konto.KontoBetrag;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 
-public class neueBuchungDialog extends Dialog<Buchung> {
-    private buchungController ctrl;
+public class editBuchungDialog extends Dialog<Buchung> {
+    private Buchung buchung;
     private Unternehmen model;
+    private unternehmenView view;
+    private float betrag;
     private ListView<KontoBetrag> soll;
     private ListView<KontoBetrag> haben;
     private TextArea infos;
-    private unternehmenView view;
-    private float betrag;
 
-    public neueBuchungDialog(Unternehmen unternehmen, unternehmenView unternehmenView) {
+    public editBuchungDialog(Unternehmen unternehmen, unternehmenView unternehmenView, Buchung buchung) {
         this.model = unternehmen;
         this.view = unternehmenView;
-        this.ctrl = new buchungController(this.model, this.view, this);
+        this.buchung = buchung;
         this.betrag = 0;
         this.soll = new ListView<KontoBetrag>();
         Text an = new Text("an (/)");
@@ -43,7 +41,7 @@ public class neueBuchungDialog extends Dialog<Buchung> {
                 "Buchungen werden NICHT überprüft!\n" +
                 "Bitte nur SINNVOLLE Buchungen durchführen und eintragen.");
 
-        setTitle("neue Buchung erstellen..");
+        setTitle("Buchung bearbeiten...");
 
         BorderPane bp = new BorderPane(); // Left, Center, Right
 
