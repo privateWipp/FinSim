@@ -14,6 +14,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
 
 public class editBuchungDialog extends Dialog<Buchung> {
     private Buchung buchung;
@@ -59,7 +60,7 @@ public class editBuchungDialog extends Dialog<Buchung> {
         removeSoll.disableProperty().bind(this.soll.getSelectionModel().selectedItemProperty().isNull());
         removeHaben.disableProperty().bind(this.haben.getSelectionModel().selectedItemProperty().isNull());
 
-        addSoll.setOnAction(e -> this.ctrl.addSoll(this.soll));
+        addSoll.setOnAction(e -> this.ctrl.addSoll());
         removeSoll.setOnAction(e -> {
             KontoBetrag kontoBetrag = this.soll.getSelectionModel().getSelectedItem();
 
@@ -68,7 +69,7 @@ public class editBuchungDialog extends Dialog<Buchung> {
             this.soll.getItems().remove(kontoBetrag);
             this.soll.refresh();
         });
-        addHaben.setOnAction(e -> this.ctrl.addHaben(this.haben));
+        addHaben.setOnAction(e -> this.ctrl.addHaben());
         removeHaben.setOnAction(e -> {
             KontoBetrag kontoBetrag = this.haben.getSelectionModel().getSelectedItem();
 
@@ -122,7 +123,7 @@ public class editBuchungDialog extends Dialog<Buchung> {
                     String bezeichnungTFInput = bezeichnungTF.getText();
                     String belegTFInput = belegTF.getText();
                     if (bilanzCheck() == 0) {
-                        return this.buchung = new Buchung(bezeichnungTFInput, belegTFInput, LocalDate.now());
+                        return this.buchung = new Buchung(bezeichnungTFInput, belegTFInput, LocalDate.now(), new ArrayList<KontoBetrag>(this.soll.getItems()), new ArrayList<KontoBetrag>(this.haben.getItems()));
                     } else {
                         this.view.errorAlert("unausgeglichene Bilanz", "Die Bilanz ist zu " + bilanzCheck() + "€ unausgeglichen (von Soll-Seite)!");
                     }
@@ -139,21 +140,17 @@ public class editBuchungDialog extends Dialog<Buchung> {
         float habenSeite = 0;
 
         for (KontoBetrag kontoBetrag : this.soll.getItems()) {
-            for (Eintrag eintrag : kontoBetrag.getKonto().getSoll()) {
-                sollSeite += eintrag.getBetrag();
-            }
+            sollSeite += kontoBetrag.getBetrag();
         }
 
         for (KontoBetrag kontoBetrag : this.haben.getItems()) {
-            for (Eintrag eintrag : kontoBetrag.getKonto().getHaben()) {
-                habenSeite += eintrag.getBetrag();
-            }
+            habenSeite += kontoBetrag.getBetrag();
         }
 
         return sollSeite - habenSeite;
     }
 
-    public float getBetrag() {
+        public float getBetrag() {
         return this.betrag;
     }
 
@@ -166,21 +163,25 @@ public class editBuchungDialog extends Dialog<Buchung> {
     }
 
     private void loadSollHabenLV() {
-        /**for(Buchung buchung : this.model.getBuchungen()) {
-            if(buchung.equals(this.buchung)) {
-                for(KontoBetrag kontoBetrag : buchung.getSoll()) {
-                    this.soll.getItems().add(new KontoBetrag(kontoBetrag.getKonto(), kontoBetrag.getBetrag()));
-                }
-                for(KontoBetrag kontoBetrag : buchung.getHaben()) {
-                    this.haben.getItems().add(new KontoBetrag(kontoBetrag.getKonto(), kontoBetrag.getBetrag()));
-                }
-                this.soll.refresh();
-                this.haben.refresh();
-            }
-        }**/
-        this.soll.getItems().addAll(this.buchung.getSoll());
-        this.haben.getItems().addAll(this.buchung.getHaben());
+        this.soll.getItems().clear();
+        this.haben.getItems().clear();
+
+        for(KontoBetrag kontoBetrag : this.buchung.getSoll()) {
+            this.soll.getItems().add(kontoBetrag);
+        }
+        for(KontoBetrag kontoBetrag : this.buchung.getHaben()) {
+            this.haben.getItems().add(kontoBetrag);
+        }
         this.soll.refresh();
-        this.haben.refresh();;
+        this.haben.refresh();
+    }
+
+
+    public ListView<KontoBetrag> getSoll() {
+        return this.soll;
+    }
+
+    public ListView<KontoBetrag> getHaben() {
+        return this.haben;
     }
 }

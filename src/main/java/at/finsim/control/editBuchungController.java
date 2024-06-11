@@ -24,36 +24,36 @@ public class editBuchungController {
         this.editBuchungDialog = editBuchungDialog;
     }
 
-    public void addSoll(ListView<KontoBetrag> soll) {
-        addSollDialog addSollDialog = new addSollDialog(model);
+    public void addSoll() {
+        addSollDialog addSollDialog = new addSollDialog(this.model);
         Optional<KontoBetrag> k = addSollDialog.showAndWait();
 
         k.ifPresent(konto -> {
             try {
                 Eintrag eintrag = new Eintrag(LocalDate.now(), konto.getKonto().getBezeichnung(), konto.getBetrag());
                 this.editBuchungDialog.addBetrag(konto.getBetrag());
-                konto.getKonto().getSoll().add(eintrag);
+                //konto.getKonto().getSoll().add(eintrag);
                 KontoBetrag sollKonto = new KontoBetrag(konto.getKonto(), konto.getBetrag());
-                soll.getItems().add(sollKonto);
-                soll.refresh();
+                this.editBuchungDialog.getSoll().getItems().add(sollKonto);
+                this.editBuchungDialog.getSoll().refresh();
             } catch (ModelException me) {
                 this.view.errorAlert("+ Soll-Konto erstellen", "Das angegebene +Soll-Konto konnte nicht erstellt werden!");
             }
         });
     }
 
-    public void addHaben(ListView<KontoBetrag> haben) {
-        addHabenDialog addHabenDialog = new addHabenDialog(model);
+    public void addHaben() {
+        addHabenDialog addHabenDialog = new addHabenDialog(this.model);
         Optional<KontoBetrag> k = addHabenDialog.showAndWait();
 
         k.ifPresent(konto -> {
             try {
                 Eintrag eintrag = new Eintrag(LocalDate.now(), konto.getKonto().getBezeichnung(), konto.getBetrag());
                 this.editBuchungDialog.addBetrag(konto.getBetrag());
-                konto.getKonto().getHaben().add(eintrag);
+                //konto.getKonto().getHaben().add(eintrag);
                 KontoBetrag habenKonto = new KontoBetrag(konto.getKonto(), konto.getBetrag());
-                haben.getItems().add(habenKonto);
-                haben.refresh();
+                this.editBuchungDialog.getHaben().getItems().add(habenKonto);
+                this.editBuchungDialog.getHaben().refresh();
             } catch (ModelException me) {
                 this.view.errorAlert("+ Haben-Konto erstellen", "Das angegebene +Haben-Konto konnte nicht erstellt werden!");
             }

@@ -39,12 +39,12 @@ public class unternehmenView extends TabPane {
         BorderPane dashboard = new BorderPane();
 
         VBox leftPane = new VBox();
-        leftPane.setStyle("-fx-background-color: #2c3e50;");
+        leftPane.setStyle("-fx-background-color: #3790ef;");
         leftPane.setPadding(new javafx.geometry.Insets(20));
 
         ToolBar toolBar = new ToolBar();
         toolBar.setOrientation(Orientation.VERTICAL);
-        toolBar.setStyle("-fx-background-color: lightgray;");
+        toolBar.setStyle("-fx-background-color: #3790EFFF;");
         toolBar.setPrefHeight(Integer.MAX_VALUE);
 
         Button speichernButton = new Button("Speichern");
@@ -157,7 +157,7 @@ public class unternehmenView extends TabPane {
         BorderPane buchungenBP = new BorderPane();
 
         HBox buchungBtsHBox = new HBox();
-        buchungBtsHBox.setPadding(new Insets(0, 0, 10, 10));
+        buchungBtsHBox.setPadding(new Insets(10, 10, 10, 10));
         buchungBtsHBox.setSpacing(10);
         Button addBuchung = new Button("neue Buchung");
         Button removeBuchung = new Button("Buchung rückgängig machen..");
@@ -227,6 +227,10 @@ public class unternehmenView extends TabPane {
         Text bilanzText = new Text("akt. Bilanz");
         bilanzHBox.getChildren().add(bilanzText);
 
+        HBox guv = new HBox();
+        Label guvText = new Label("Gewinn und Verlust:");
+
+        CategoryAxis xAchis = new CategoryAxis();
         grundInfosHBox.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent mouseEvent) {
@@ -276,11 +280,11 @@ public class unternehmenView extends TabPane {
         });
 
         this.gp.add(title, 0, 0,1,1);
-        this.gp.add(grundInfosHBox, 2, 1, 1, 1);
+        this.gp.add(grundInfosHBox, 0, 1, 1, 1);
         this.gp.add(geschaeftsjahreHBox, 3, 1, 1, 1);
-        this.gp.add(kontenplanButton, 2, 2, 1, 1);
-        this.gp.add(buchungenHBox, 3, 2, 2, 3);
-        this.gp.add(bilanzHBox, 4, 2, 1, 1);
+        this.gp.add(kontenplanButton, 0, 5, 1, 1);
+        this.gp.add(buchungenHBox, 3, 5, 2, 3);
+        this.gp.add(bilanzHBox, 8, 5, 1, 1);
 
         dashboard.setCenter(this.gp);
 

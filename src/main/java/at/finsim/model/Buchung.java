@@ -27,12 +27,12 @@ public class Buchung implements Serializable {
      * @param datum Datum der Buchung
      * @throws ModelException Wird von Setter geworfen
      */
-    public Buchung(String bezeichnung, String beleg, LocalDate datum) throws ModelException {
+    public Buchung(String bezeichnung, String beleg, LocalDate datum, ArrayList<KontoBetrag> soll, ArrayList<KontoBetrag> haben) throws ModelException {
         setBezeichnung(bezeichnung);
         setBeleg(beleg);
         setDatum(datum);
-        this.soll = new ArrayList<KontoBetrag>();
-        this.haben = new ArrayList<KontoBetrag>();
+        this.soll = soll;
+        this.haben = soll;
     }
 
     /**

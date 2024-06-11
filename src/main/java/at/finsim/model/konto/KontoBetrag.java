@@ -1,6 +1,9 @@
 package at.finsim.model.konto;
 
-public class KontoBetrag {
+import java.io.Serializable;
+
+public class KontoBetrag implements Serializable {
+    private static final long serialVersionUID = 1L;
     private Konto konto;
     private float betrag;
 
