@@ -1,6 +1,7 @@
 package at.finsim.model;
 
 import at.finsim.model.konto.Konto;
+import at.finsim.model.konto.KontoBetrag;
 
 import java.io.Serializable;
 import java.time.LocalDate;
@@ -15,8 +16,8 @@ public class Buchung implements Serializable {
     private String bezeichnung; // quasi der Name für die Buchung, Bsp.: Verkauf von Fahrrädern an Nachbar
     private String beleg; // Art des Belegs, Bsp.: Kassabeleg, Eingangsrechnung, Kontoauszug
     private LocalDate datum; // wann war diese Buchung?
-    private ArrayList<Konto> soll; // alle Konten der Buchung der Soll-Seite
-    private ArrayList<Konto> haben; // alle Konten der Buchung der Haben-Seite
+    private ArrayList<KontoBetrag> soll; // alle Konten der Buchung der Soll-Seite
+    private ArrayList<KontoBetrag> haben; // alle Konten der Buchung der Haben-Seite
 
     /**
      * Der Default-Konstruktor:
@@ -30,8 +31,8 @@ public class Buchung implements Serializable {
         setBezeichnung(bezeichnung);
         setBeleg(beleg);
         setDatum(datum);
-        this.soll = new ArrayList<>();
-        this.haben = new ArrayList<>();
+        this.soll = new ArrayList<KontoBetrag>();
+        this.haben = new ArrayList<KontoBetrag>();
     }
 
     /**
@@ -88,11 +89,11 @@ public class Buchung implements Serializable {
         return this.datum;
     }
 
-    public ArrayList<Konto> getSoll() {
+    public ArrayList<KontoBetrag> getSoll() {
         return this.soll;
     }
 
-    public ArrayList<Konto> getHaben() {
+    public ArrayList<KontoBetrag> getHaben() {
         return this.haben;
     }
 

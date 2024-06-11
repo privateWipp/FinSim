@@ -107,7 +107,8 @@ public class Controller {
                     this.view.errorAlert("Importieren", "Das Unternehmen ist bereits in der Liste eingetragen!");
                 }
             } catch (ModelException | FileNotFoundException e) {
-                throw new RuntimeException(e);
+                this.view.errorAlert("Importieren", "Das übergebene Unternehmen konnte nicht importiert werden:\n" +
+                        e.getMessage());
             }
         }
     }

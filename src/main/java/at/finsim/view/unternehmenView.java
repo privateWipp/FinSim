@@ -157,6 +157,8 @@ public class unternehmenView extends TabPane {
         BorderPane buchungenBP = new BorderPane();
 
         HBox buchungBtsHBox = new HBox();
+        buchungBtsHBox.setPadding(new Insets(0, 0, 10, 10));
+        buchungBtsHBox.setSpacing(10);
         Button addBuchung = new Button("neue Buchung");
         Button removeBuchung = new Button("Buchung rückgängig machen..");
         Button editBuchung = new Button("Buchung bearbeiten/ansehen");

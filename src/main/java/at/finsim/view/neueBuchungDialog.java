@@ -99,7 +99,7 @@ public class neueBuchungDialog extends Dialog<Buchung> {
         belegHBox.setSpacing(10);
         belegHBox.getChildren().addAll(beleg, belegTF);
 
-        topBox.getChildren().addAll(buchungButtons, bezeichnungHBox, belegHBox);
+        topBox.getChildren().addAll(bezeichnungHBox, belegHBox, buchungButtons);
 
         bp.setTop(topBox);
         bp.setLeft(this.soll);
@@ -161,6 +161,6 @@ public class neueBuchungDialog extends Dialog<Buchung> {
     }
 
     public void subtractBetrag(float betrag) {
-        this.betrag += betrag;
+        this.betrag -= betrag;
     }
 }

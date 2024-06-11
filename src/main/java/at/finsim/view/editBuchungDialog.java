@@ -1,5 +1,6 @@
 package at.finsim.view;
 
+import at.finsim.control.editBuchungController;
 import at.finsim.model.Buchung;
 import at.finsim.model.Eintrag;
 import at.finsim.model.ModelException;
@@ -7,7 +8,6 @@ import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.KontoBetrag;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -23,15 +23,18 @@ public class editBuchungDialog extends Dialog<Buchung> {
     private ListView<KontoBetrag> soll;
     private ListView<KontoBetrag> haben;
     private TextArea infos;
+    private editBuchungController ctrl;
 
     public editBuchungDialog(Unternehmen unternehmen, unternehmenView unternehmenView, Buchung buchung) {
         this.model = unternehmen;
+        this.ctrl = new editBuchungController(this.model, this.view, this);
         this.view = unternehmenView;
         this.buchung = buchung;
         this.betrag = 0;
         this.soll = new ListView<KontoBetrag>();
         Text an = new Text("an (/)");
         this.haben = new ListView<KontoBetrag>();
+        loadSollHabenLV();
         this.infos = new TextArea();
         this.infos.setEditable(false);
         this.infos.setText("links: Soll\n" +
@@ -83,7 +86,7 @@ public class editBuchungDialog extends Dialog<Buchung> {
         HBox bezeichnungHBox = new HBox();
         Label bezeichnung = new Label("Bezeichnung:");
         TextField bezeichnungTF = new TextField();
-        bezeichnungTF.setPromptText("z.B.: erste Buchung - [XX.XX.XXXX], ...");
+        bezeichnungTF.setText(this.buchung.getBezeichnung());
         bezeichnungHBox.setPadding(new Insets(0, 0, 10, 10));
         bezeichnungHBox.setSpacing(10);
         bezeichnungHBox.getChildren().addAll(bezeichnung, bezeichnungTF);
@@ -92,12 +95,12 @@ public class editBuchungDialog extends Dialog<Buchung> {
         HBox belegHBox = new HBox();
         Label beleg = new Label("Beleg:");
         TextField belegTF = new TextField();
-        belegTF.setPromptText("z.B.: KB, Kontoauszug, Scheck, Postbeleg, ...");
+        belegTF.setText(this.buchung.getBeleg());
         belegHBox.setPadding(new Insets(0, 0, 10, 10));
         belegHBox.setSpacing(10);
         belegHBox.getChildren().addAll(beleg, belegTF);
 
-        topBox.getChildren().addAll(buchungButtons, bezeichnungHBox, belegHBox);
+        topBox.getChildren().addAll(bezeichnungHBox, belegHBox, buchungButtons);
 
         bp.setTop(topBox);
         bp.setLeft(this.soll);
@@ -119,7 +122,7 @@ public class editBuchungDialog extends Dialog<Buchung> {
                     String bezeichnungTFInput = bezeichnungTF.getText();
                     String belegTFInput = belegTF.getText();
                     if (bilanzCheck() == 0) {
-                        return new Buchung(bezeichnungTFInput, belegTFInput, LocalDate.now());
+                        return this.buchung = new Buchung(bezeichnungTFInput, belegTFInput, LocalDate.now());
                     } else {
                         this.view.errorAlert("unausgeglichene Bilanz", "Die Bilanz ist zu " + bilanzCheck() + "€ unausgeglichen (von Soll-Seite)!");
                     }
@@ -159,6 +162,25 @@ public class editBuchungDialog extends Dialog<Buchung> {
     }
 
     public void subtractBetrag(float betrag) {
-        this.betrag += betrag;
+        this.betrag -= betrag;
+    }
+
+    private void loadSollHabenLV() {
+        /**for(Buchung buchung : this.model.getBuchungen()) {
+            if(buchung.equals(this.buchung)) {
+                for(KontoBetrag kontoBetrag : buchung.getSoll()) {
+                    this.soll.getItems().add(new KontoBetrag(kontoBetrag.getKonto(), kontoBetrag.getBetrag()));
+                }
+                for(KontoBetrag kontoBetrag : buchung.getHaben()) {
+                    this.haben.getItems().add(new KontoBetrag(kontoBetrag.getKonto(), kontoBetrag.getBetrag()));
+                }
+                this.soll.refresh();
+                this.haben.refresh();
+            }
+        }**/
+        this.soll.getItems().addAll(this.buchung.getSoll());
+        this.haben.getItems().addAll(this.buchung.getHaben());
+        this.soll.refresh();
+        this.haben.refresh();;
     }
 }

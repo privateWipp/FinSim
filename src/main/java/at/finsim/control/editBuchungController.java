@@ -6,22 +6,22 @@ import at.finsim.model.Unternehmen;
 import at.finsim.model.konto.KontoBetrag;
 import at.finsim.view.addHabenDialog;
 import at.finsim.view.addSollDialog;
+import at.finsim.view.editBuchungDialog;
 import javafx.scene.control.ListView;
 import at.finsim.view.unternehmenView;
-import at.finsim.view.neueBuchungDialog;
 
 import java.time.LocalDate;
 import java.util.Optional;
 
-public class buchungController {
+public class editBuchungController {
     private Unternehmen model;
     private unternehmenView view;
-    private neueBuchungDialog neueBuchungDialog;
+    private editBuchungDialog editBuchungDialog;
 
-    public buchungController(Unternehmen unternehmen, unternehmenView unternehmenView, neueBuchungDialog neueBuchungDialog) {
+    public editBuchungController(Unternehmen unternehmen, unternehmenView unternehmenView, editBuchungDialog editBuchungDialog) {
         this.model = unternehmen;
         this.view = unternehmenView;
-        this.neueBuchungDialog = neueBuchungDialog;
+        this.editBuchungDialog = editBuchungDialog;
     }
 
     public void addSoll(ListView<KontoBetrag> soll) {
@@ -31,7 +31,7 @@ public class buchungController {
         k.ifPresent(konto -> {
             try {
                 Eintrag eintrag = new Eintrag(LocalDate.now(), konto.getKonto().getBezeichnung(), konto.getBetrag());
-                this.neueBuchungDialog.addBetrag(konto.getBetrag());
+                this.editBuchungDialog.addBetrag(konto.getBetrag());
                 konto.getKonto().getSoll().add(eintrag);
                 KontoBetrag sollKonto = new KontoBetrag(konto.getKonto(), konto.getBetrag());
                 soll.getItems().add(sollKonto);
@@ -49,7 +49,7 @@ public class buchungController {
         k.ifPresent(konto -> {
             try {
                 Eintrag eintrag = new Eintrag(LocalDate.now(), konto.getKonto().getBezeichnung(), konto.getBetrag());
-                this.neueBuchungDialog.addBetrag(konto.getBetrag());
+                this.editBuchungDialog.addBetrag(konto.getBetrag());
                 konto.getKonto().getHaben().add(eintrag);
                 KontoBetrag habenKonto = new KontoBetrag(konto.getKonto(), konto.getBetrag());
                 haben.getItems().add(habenKonto);

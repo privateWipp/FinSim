@@ -110,5 +110,17 @@ public class unternehmenController {
 
     public void editBuchung(Buchung buchung) {
         editBuchungDialog editBuchungDialog = new editBuchungDialog(this.model, this.view, buchung);
+        Optional<Buchung> b = editBuchungDialog.showAndWait();
+
+        b.ifPresent(buchungb -> {
+            try {
+                this.model.removeBuchung(buchung);
+                this.view.getBuchungen().getItems().remove(buchung);
+                this.model.addBuchung(buchungb);
+                this.view.getBuchungen().getItems().add(buchungb);
+            } catch (ModelException e) {
+                this.view.errorAlert("Buchung ändern", "Beim Ändern der Buchung ist ein Fehler aufgetreten!");
+            }
+        });
     }
 }
